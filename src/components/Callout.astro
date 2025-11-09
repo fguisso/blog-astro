@@ -1,0 +1,47 @@
+---
+const { title = 'Nota', variant = 'info' } = Astro.props;
+
+const colors = {
+	info: {
+		background: 'rgba(var(--accent), 0.12)',
+		border: 'rgb(var(--accent))',
+	},
+	warning: {
+		background: 'rgba(255, 170, 0, 0.12)',
+		border: 'rgb(255, 170, 0)',
+	},
+	success: {
+		background: 'rgba(26, 145, 70, 0.18)',
+		border: 'rgb(26, 145, 70)',
+	},
+};
+const current = colors[variant] ?? colors.info;
+---
+
+<div class="callout" style={`background:${current.background};border-color:${current.border}`}>
+	<p class="title">{title}</p>
+	<div class="body">
+		<slot />
+	</div>
+</div>
+
+<style>
+	.callout {
+		margin: 1.5rem 0;
+		padding: 1rem 1.25rem;
+		border-left: 4px solid;
+		border-radius: 12px;
+		box-shadow: var(--box-shadow);
+	}
+
+	.title {
+		margin: 0 0 0.35rem;
+		font-weight: 600;
+		color: rgb(var(--black));
+	}
+
+	.body :global(p) {
+		margin: 0.25rem 0;
+		color: rgb(var(--gray));
+	}
+</style>

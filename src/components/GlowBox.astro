@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Accent = 'accent' | 'secondary' | 'highlight';
+type Padding = 'snug' | 'normal' | 'relaxed';
+
+interface Props extends HTMLAttributes<'div'> {
+	accent?: Accent;
+	padding?: Padding;
+}
+
+const { accent = 'accent', padding = 'normal', class: className, ...rest } = Astro.props as Props;
+const classes = [
+	'glow-box',
+	`glow-box--${accent}`,
+	{
+		'glow-box--snug': padding === 'snug',
+		'glow-box--relaxed': padding === 'relaxed',
+	},
+	className,
+];
+---
+
+<div class:list={classes} {...rest}>
+	<slot />
+</div>
+
+<style>
+	.glow-box--accent::before {
+		background: radial-gradient(circle, rgba(0, 255, 127, 0.45), transparent 55%);
+	}
+	.glow-box--secondary::before {
+		background: radial-gradient(circle, rgba(154, 26, 255, 0.4), transparent 60%);
+	}
+	.glow-box--highlight::before {
+		background: radial-gradient(circle, rgba(110, 110, 255, 0.4), transparent 60%);
+	}
+</style>

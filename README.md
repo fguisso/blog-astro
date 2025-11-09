@@ -15,6 +15,15 @@ Features:
 - ✅ RSS Feed support
 - ✅ Markdown & MDX support
 
+## ▶️ Como rodar localmente
+
+```bash
+npm install
+npm run dev
+```
+
+O primeiro comando instala todas as dependências (incluindo `@astrojs/mdx`). Depois disso o blog fica disponível em `http://localhost:4321` com recarregamento automático enquanto você edita arquivos em `src/`.
+
 ## 🚀 Project Structure
 
 Inside of your Astro project, you'll see the following folders and files:

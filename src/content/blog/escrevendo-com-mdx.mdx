@@ -1,0 +1,26 @@
+---
+title: 'Escrevendo com MDX'
+description: 'Combine Markdown e componentes Astro para posts mais ricos.'
+pubDate: 'Nov 22 2024'
+updatedDate: 'Nov 22 2024'
+heroImage: '../../assets/blog-placeholder-2.jpg'
+---
+import Callout from '../../components/Callout.astro';
+
+Ao usar MDX, você pode continuar escrevendo em Markdown e, quando precisar de algo mais dinâmico, importar componentes Astro normalmente.
+
+<Callout title="Dica rápida">
+	MDX é perfeito para notas, trechos de código e chamadas visuais sem precisar criar páginas dedicadas.
+</Callout>
+
+## Exemplos úteis
+
+- Renderizar componentes interativos ou estilizados inline.
+- Compartilhar snippets reutilizáveis (cards, alertas, chamadas).
+- Encapsular logotipos e ícones SVG como componentes e reutilizá-los no conteúdo.
+
+<Callout variant="success" title="Componentes + Conteúdo">
+	Você também pode passar propriedades para personalizar cada bloco, como estamos fazendo agora com o `variant="success"`.
+</Callout>
+
+Para saber mais, veja a documentação de [Markdown & MDX no Astro](https://docs.astro.build/pt-br/guides/markdown-content/).

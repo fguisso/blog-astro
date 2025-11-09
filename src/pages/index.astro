@@ -1,8 +1,20 @@
 ---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
+import GlowBox from '../components/GlowBox.astro';
+import GlowButton from '../components/GlowButton.astro';
 import Header from '../components/Header.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const featuredPosts = posts.slice(0, 3);
+const totalPosts = posts.length;
+const newestPost = posts[0];
 ---
 
 <!doctype html>
@@ -12,38 +24,203 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	</head>
 	<body>
 		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+		<main class="page-shell home-shell">
+			<section class="hero-grid">
+				<div class="hero-copy">
+					<p class="eyebrow">style guide ready</p>
+					<h1>
+						Criei um <span class="gradient-text">playground visual</span> para compartilhar ideias,
+						prototipar interfaces e documentar o processo.
+					</h1>
+					<p class="text-muted">
+						O blog inteiro agora segue o style guide neon inspirado no portfólio da Guisso —
+						tipografia Oferta do Dia, botões com glow e boxes holográficos. Aperte o cinto e bora
+						explorar.
+					</p>
+					<div class="hero-actions">
+						<GlowButton href="/blog" variant="accent">Ver artigos</GlowButton>
+						<GlowButton href="/about" variant="ghost">Sobre o projeto</GlowButton>
+					</div>
+				</div>
+				<div class="hero-panel">
+					<GlowBox padding="relaxed">
+						<p class="eyebrow">último post</p>
+						<h2>{newestPost.data.title}</h2>
+						<p class="text-muted">{newestPost.data.description}</p>
+						<div class="hero-panel__meta">
+							<span>
+								<FormattedDate date={newestPost.data.pubDate} />
+							</span>
+							<GlowButton href={`/blog/${newestPost.id}/`} variant="outline" size="sm">
+								Ler agora
+							</GlowButton>
+						</div>
+					</GlowBox>
+					<GlowBox accent="secondary" padding="snug" class="hero-panel__stats">
+						<div>
+							<p class="stat-label">Posts publicados</p>
+							<p class="stat-value">{totalPosts}</p>
+						</div>
+						<div>
+							<p class="stat-label">MDX disponível</p>
+							<p class="stat-value">100%</p>
+						</div>
+						<div>
+							<p class="stat-label">Tema</p>
+							<p class="stat-value">Neon Grid</p>
+						</div>
+					</GlowBox>
+				</div>
+			</section>
+
+			<section class="latest-posts">
+				<div class="section-heading">
+					<p class="eyebrow">últimas publicações</p>
+					<div>
+						<h2>Notas recentes com toque futurista</h2>
+						<p>
+							Cada card reutiliza os componentes do style guide: bordas com glow, botões fantasma e
+							tipografia expressiva.
+						</p>
+					</div>
+					<GlowButton href="/blog" variant="outline" size="sm">Ver todas</GlowButton>
+				</div>
+				<div class="post-grid">
+					{
+						featuredPosts.map((post) => (
+							<article class="post-card glow-box">
+								{post.data.heroImage && (
+									<a href={`/blog/${post.id}/`} class="post-card__image">
+										<Image
+											src={post.data.heroImage}
+											alt=""
+											width={640}
+											height={360}
+											loading="lazy"
+										/>
+									</a>
+								)}
+								<p class="post-card__date">
+									<FormattedDate date={post.data.pubDate} />
+								</p>
+								<h3>{post.data.title}</h3>
+								<p class="text-muted">{post.data.description}</p>
+								<div class="post-card__actions">
+									<GlowButton href={`/blog/${post.id}/`} variant="ghost" size="sm">
+										Ler artigo
+									</GlowButton>
+								</div>
+							</article>
+						))
+					}
+				</div>
+			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.home-shell {
+		padding-top: 4rem;
+	}
+
+	.hero-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 3rem;
+		align-items: center;
+		margin-bottom: 4rem;
+	}
+
+	.hero-actions {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+		margin-top: 2rem;
+	}
+
+	.hero-panel {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.hero-panel__meta {
+		margin-top: 1.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.hero-panel__stats {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+		gap: 1rem;
+	}
+
+	.stat-label {
+		margin: 0;
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		color: var(--color-muted);
+	}
+
+	.stat-value {
+		margin: 0.25rem 0 0;
+		font-size: 1.8rem;
+		color: var(--color-fg);
+		font-family: 'Oferta do Dia', sans-serif;
+	}
+
+	.section-heading {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		align-items: start;
+		gap: 1.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.post-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 2rem;
+	}
+
+	.post-card__image {
+		display: block;
+		margin: -1.5rem -1.5rem 1.5rem;
+	}
+
+	.post-card__image img {
+		width: 100%;
+		height: auto;
+		display: block;
+		border-radius: var(--border-radius) var(--border-radius) 0 0;
+		box-shadow: none;
+	}
+
+	.post-card__date {
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		font-size: 0.75rem;
+		color: var(--color-accent);
+		margin-bottom: 0.5rem;
+	}
+
+	.post-card__actions {
+		margin-top: 1.5rem;
+	}
+
+	@media (max-width: 720px) {
+		.home-shell {
+			padding-top: 2rem;
+		}
+		.post-card__image {
+			margin: -1rem -1rem 1rem;
+		}
+	}
+</style>
