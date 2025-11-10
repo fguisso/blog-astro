@@ -1,0 +1,255 @@
+---
+---
+
+<div class="hero-canvas" aria-hidden="true">
+	<canvas id="heroCanvas" aria-hidden="true"></canvas>
+</div>
+
+<style>
+	.hero-canvas {
+		display: none;
+		position: relative;
+		width: min(420px, 100%);
+		aspect-ratio: 1;
+		background-color: transparent;
+		border-radius: var(--border-radius);
+		overflow: hidden;
+		cursor: auto;
+	}
+
+	.hero-canvas::before,
+	.hero-canvas::after {
+		content: '';
+		position: absolute;
+		width: 300px;
+		height: 300px;
+		filter: blur(40px);
+		opacity: 0.1;
+		animation: float 6s ease-in-out infinite;
+		z-index: 1;
+	}
+
+	.hero-canvas::before {
+		right: -50px;
+		top: -50px;
+		background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+	}
+
+	.hero-canvas::after {
+		left: -100px;
+		bottom: -50px;
+		background: radial-gradient(circle, var(--color-secondary) 0%, transparent 70%);
+		animation-direction: reverse;
+	}
+
+	#heroCanvas {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 2;
+	}
+
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+	}
+
+	@media (min-width: 980px) {
+		.hero-canvas {
+			display: block;
+		}
+	}
+
+</style>
+
+<script type="module">
+	import { gsap } from 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/index.js';
+	import * as THREE from 'https://unpkg.com/three@0.160.1/build/three.module.js';
+
+	if (typeof window === 'undefined') {
+		throw new Error('Window not available');
+	}
+
+	const canvas = document.getElementById('heroCanvas');
+	if (!canvas) {
+		throw new Error('Canvas not found');
+	}
+
+	const renderer = new THREE.WebGLRenderer({
+		canvas,
+		antialias: true,
+		alpha: true,
+	});
+	renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+	const scene = new THREE.Scene();
+	const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+	camera.position.z = 5;
+
+	const group = new THREE.Group();
+	scene.add(group);
+
+	const material = new THREE.MeshPhongMaterial({
+    color: 0x000000,
+		specular: 0x888888,
+		shininess: 200,
+		transparent: true,
+		opacity: 0.95,
+		reflectivity: 1.0,
+	});
+
+	const ring = new THREE.Mesh(new THREE.TorusGeometry(2.1, 0.1, 32, 100), material);
+	group.add(ring);
+
+	const pyramidGroup = new THREE.Group();
+	pyramidGroup.scale.set(0.8, 0.8, 0.8);
+	group.add(pyramidGroup);
+
+	const geometry = new THREE.ConeGeometry(1.5, 2, 4);
+	geometry.computeVertexNormals();
+	geometry.rotateX(Math.PI);
+	const pyramid = new THREE.Mesh(geometry, material);
+	pyramidGroup.add(pyramid);
+
+	const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+	scene.add(ambientLight);
+
+	const mainLight = new THREE.PointLight(0xaaaaaa, 1.5, 100);
+	mainLight.position.set(0, -5, 0);
+	scene.add(mainLight);
+
+	const topLight = new THREE.PointLight(0xbbbbbb, 1.0, 100);
+	topLight.position.set(1, 1, 1);
+	scene.add(topLight);
+
+	const accentLight1 = new THREE.PointLight(0x00FF7F, 1.0, 50);
+	accentLight1.position.set(-5, -5, 5);
+	scene.add(accentLight1);
+
+	const accentLight2 = new THREE.PointLight(0x9A1AFF, 1.0, 50);
+	accentLight2.position.set(5, -5, -5);
+	scene.add(accentLight2);
+
+	const accentLight3 = new THREE.PointLight(0x6E6EFF, 1.0, 50);
+	accentLight3.position.set(-5, 5, -5);
+	scene.add(accentLight3);
+
+	const rimLight1 = new THREE.DirectionalLight(0xffffff, 0.1);
+	rimLight1.position.set(0, -5, 5);
+	scene.add(rimLight1);
+
+	const rimLight2 = new THREE.DirectionalLight(0xffffff, 0.6);
+	rimLight2.position.set(0, -5, -5);
+	scene.add(rimLight2);
+
+	const blurLight1 = new THREE.PointLight(0x00FF7F, 0.6, 30);
+	blurLight1.position.set(3, 3, 3);
+	scene.add(blurLight1);
+
+	const blurLight2 = new THREE.PointLight(0x9A1AFF, 0.6, 30);
+	blurLight2.position.set(-3, -3, 3);
+	scene.add(blurLight2);
+
+	const timeline = gsap.timeline({ repeat: -1 });
+	timeline
+		.to(
+			ring.rotation,
+			{
+				z: '+=6.28319',
+				x: '+=6.28319',
+				duration: 8,
+				ease: 'power1.inOut',
+			},
+			0,
+		)
+		.to(
+			group.rotation,
+			{
+				y: 6.28319,
+				duration: 8,
+				ease: 'power1.inOut',
+			},
+			0,
+		)
+		.to(
+			pyramidGroup.rotation,
+			{
+				x: '+=6.28319',
+				y: '+=6.28319',
+				duration: 8,
+				ease: 'power1.inOut',
+			},
+			0,
+		);
+
+	let mouseX = 0;
+	let mouseY = 0;
+	let targetRotationX = 0;
+	let targetRotationY = 0;
+	let currentRotationX = 0;
+	let currentRotationY = 0;
+
+	window.addEventListener('mousemove', (e) => {
+		const rect = canvas.getBoundingClientRect();
+		mouseX = (e.clientX - rect.left) / canvas.clientWidth;
+		mouseY = (e.clientY - rect.top) / canvas.clientHeight;
+
+		mainLight.position.x = (mouseX - 0.5) * 10;
+		mainLight.position.z = (mouseY - 0.5) * 10;
+
+		topLight.position.x = -mouseX * 10;
+		topLight.position.z = -mouseY * 10;
+
+		blurLight1.position.x = (mouseX - 0.5) * 6;
+		blurLight1.position.z = (mouseY - 0.5) * 6;
+		blurLight2.position.x = -(mouseX - 0.5) * 6;
+		blurLight2.position.z = -(mouseY - 0.5) * 6;
+
+		targetRotationX = (mouseY - 0.5) * 0.5;
+		targetRotationY = (mouseX - 0.5) * 0.5;
+	});
+
+	const handleResize = () => {
+		const width = canvas.clientWidth;
+		const height = canvas.clientHeight;
+
+		renderer.setSize(width, height);
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+
+		if (width > height) {
+			camera.position.z = 5;
+		} else {
+			camera.position.z = 7;
+		}
+	};
+
+	window.addEventListener('resize', handleResize);
+	handleResize();
+
+	function animate() {
+		requestAnimationFrame(animate);
+
+		currentRotationX += (targetRotationX - currentRotationX) * 0.05;
+		currentRotationY += (targetRotationY - currentRotationY) * 0.05;
+
+		pyramidGroup.rotation.x = currentRotationX;
+		pyramidGroup.rotation.y = currentRotationY;
+
+		const time = Date.now() * 0.001;
+		blurLight1.position.y = 2 + Math.sin(time) * 0.02;
+		blurLight2.position.y = -2 + Math.cos(time) * 0.02;
+
+		renderer.render(scene, camera);
+	}
+
+	animate();
+</script>
