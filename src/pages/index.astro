@@ -80,7 +80,7 @@ const { site, featuredProjects } = themeConfig;
 				<div class="hero__content">
 					<p class="eyebrow hero__eyebrow">Sobre</p>
 					<h1 class="hero__heading">
-						Oi, eu sou o <span class="gradient-text hero__name">Fernando Guisso</span>.
+						Oi, eu sou o <span class="display-special primary">Fernando Guisso</span>.
 					</h1>
 					<p class="hero__line">
 						Sou Secure Software Engineer no willbank, onde lidero a área de AppSec e a plataforma interna de autenticação.
@@ -107,8 +107,8 @@ const { site, featuredProjects } = themeConfig;
 				<section class="featured-projects">
 					<div class="featured-projects__head">
 						<div class="featured-projects__head-text">
-							<p class="eyebrow">featured projects</p>
-							<h2 class="featured-projects__title">Laboratórios em que estou trabalhando agora</h2>
+							<p class="eyebrow">projetos principais</p>
+              <h1 class="featured-projects__title"><span class="display-special primary">Projetos</span> em que estou trabalhando agora</h2>
 						</div>
 						<GlowButton href="/projects" variant="ghost" size="sm">Ver projetos</GlowButton>
 					</div>
@@ -123,9 +123,9 @@ const { site, featuredProjects } = themeConfig;
 				<section id="latest" class="latest">
 					<div class="section-head section-head--split">
 						<div>
-							<p class="eyebrow">new posts</p>
+							<p class="eyebrow">novos artigos</p>
 							<h2>
-								See what we’ve <em>written lately</em>
+                Veja o que eu <em><span class="display-special primary">ando escrevendo</span></em>
 							</h2>
 						</div>
 					</div>
@@ -148,7 +148,7 @@ const { site, featuredProjects } = themeConfig;
 					</ul>
 				{loadMorePool.length > 0 && (
 					<div class="center">
-						<GlowButton data-load-more variant="accent" size="sm">Load more</GlowButton>
+						<GlowButton href={`/blog`} variant="accent" size="sm">Veja mais</GlowButton>
 					</div>
 				)}
 			</section>
