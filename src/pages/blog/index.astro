@@ -12,9 +12,6 @@ const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-const tagPalette = ['Creative', 'Idea', 'Lifestyle', 'Review'];
-const tagLookup = new Map(posts.map((post, index) => [post.id, tagPalette[index % tagPalette.length]]));
-
 const wordsPerMinute = 200;
 const numberFormatter = new Intl.NumberFormat('pt-BR');
 const postStats = new Map(
@@ -49,7 +46,10 @@ const postStats = new Map(
 					Aqui junto desenvolvimento seguro, playlists que movem meus sprints, ajustes infinitos no home lab e as
 					tecnologias que alimentam meus projetos neon. Tudo com o mesmo cuidado de UX e AppSec que levo para o willbank.
 				</p>
-				<GlowButton href="/rss.xml" variant="ghost" size="sm">Assinar RSS</GlowButton>
+				<div class="blog-header__actions">
+					<GlowButton href="/rss.xml" variant="ghost" size="sm">Assinar RSS</GlowButton>
+					<GlowButton href="/tags" variant="ghost" size="sm">Explorar tags</GlowButton>
+				</div>
 			</section>
 
 			<section>
@@ -57,12 +57,12 @@ const postStats = new Map(
 					{posts.map((post) => {
 						const stats = postStats.get(post.id);
 						return (
-							<PostCard
-								href={`/blog/${post.id}/`}
-								title={post.data.title}
-								description={post.data.description}
-								statsLabel={stats?.label}
-								tag={tagLookup.get(post.id)}
+								<PostCard
+									href={`/blog/${post.id}/`}
+									title={post.data.title}
+									description={post.data.description}
+									statsLabel={stats?.label}
+									tag={post.data.tags?.[0] ?? null}
 								image={post.data.heroImage?.src}
 							>
 								<FormattedDate slot="label" date={post.data.pubDate} />
@@ -89,6 +89,13 @@ const postStats = new Map(
 		gap: 1rem;
 		text-align: center;
 		align-items: center;
+	}
+
+	.blog-header__actions {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+		justify-content: center;
 	}
 
 	.blog-posts-grid {

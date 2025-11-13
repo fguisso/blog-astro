@@ -7,7 +7,7 @@ import { themeConfig } from './src/theme.config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://example.com',
+	site: themeConfig.site.url,
 	integrations: [mdx(), sitemap()],
 });
 

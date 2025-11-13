@@ -9,6 +9,7 @@ export type ThemeConfig = {
 	site: {
 		title: string;
 		description: string;
+		url: string;
 	};
 	featuredProjects: FeaturedProject[];
 };
@@ -17,6 +18,7 @@ export const themeConfig: ThemeConfig = {
 	site: {
 		title: 'Astro Blog',
 		description: 'Welcome to my website!',
+		url: 'https://guisso.dev',
 	},
 	featuredProjects: [
 		{
