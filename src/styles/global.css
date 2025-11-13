@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Didact+Gothic&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Didact+Gothic&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap');
 
 @font-face {
 	font-family: 'Oferta do Dia';
@@ -92,7 +92,7 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: 'Oferta do Dia', 'Didact Gothic', 'Inter', sans-serif;
+	font-family: 'Space Grotesk', 'Didact Gothic', 'Inter', sans-serif;
 	margin: 0 0 0.65rem;
 	line-height: 1.15;
 	color: var(--color-fg);
@@ -215,6 +215,27 @@ select:focus {
 	);
 	-webkit-background-clip: text;
 	color: transparent;
+}
+
+.primary {
+	background: linear-gradient(
+		90deg,
+		var(--color-accent) 0%,
+		var(--color-secondary) 45%,
+		var(--color-highlight) 100%
+	);
+	-webkit-background-clip: text;
+	color: transparent;
+}
+
+.display-special {
+	font-family: 'Oferta do Dia', 'Space Grotesk', 'Inter', sans-serif;
+	letter-spacing: -0.03em;
+}
+
+.display-headline {
+	font-family: 'Space Grotesk', 'Didact Gothic', 'Inter', sans-serif;
+	letter-spacing: -0.01em;
 }
 
 .eyebrow {
@@ -386,6 +407,34 @@ select:focus {
 
 .glow-box--relaxed {
 	padding: 2.5rem;
+}
+
+.chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.35rem 0.9rem;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.1);
+	color: var(--color-fg);
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	position: relative;
+	z-index: 1;
+	border: 1px solid transparent;
+}
+
+.chip--ghost {
+	background: rgba(255, 255, 255, 0.06);
+	border-color: rgba(255, 255, 255, 0.15);
+}
+
+.chip--solid {
+	background: var(--color-accent);
+	color: #050505;
+	border-color: var(--color-accent);
+	box-shadow: 0 12px 24px rgba(0, 255, 127, 0.2);
 }
 
 .prose {

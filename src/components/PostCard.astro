@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Chip from './Chip.astro';
+
+interface Props extends HTMLAttributes<'li'> {
+	href: string;
+	title: string;
+	description: string;
+	tag?: string | null;
+	statsLabel?: string | null;
+	image?: string | null;
+	ctaLabel?: string;
+}
+
+const {
+	href,
+	title,
+	description,
+	tag,
+	statsLabel,
+	image,
+	ctaLabel = 'ler artigo ↗',
+	class: className,
+	...rest
+} = Astro.props as Props;
+const style = image ? `--project-image: url("${image}")` : undefined;
+---
+
+<li class:list={['featured-project', 'featured-project--post', className]} style={style} {...rest}>
+	<a href={href} class="featured-project__link">
+		<div class="featured-project__content">
+			<span class="featured-project__label">
+				<slot name="label">Meta</slot>
+			</span>
+			<h3 class="featured-project__name">{title}</h3>
+			<p class="featured-project__description">{description}</p>
+			{statsLabel && <p class="featured-project__stats">{statsLabel}</p>}
+			{tag && (
+				<Chip variant="ghost">
+					{tag}
+				</Chip>
+			)}
+			<span class="featured-project__cta">{ctaLabel}</span>
+		</div>
+	</a>
+</li>

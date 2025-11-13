@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Variant = 'ghost' | 'solid';
+
+interface Props extends HTMLAttributes<'span'> {
+	variant?: Variant;
+}
+
+const { variant = 'ghost', class: className, ...rest } = Astro.props as Props;
+const classes = [
+	'chip',
+	{
+		'chip--ghost': variant === 'ghost',
+		'chip--solid': variant === 'solid',
+	},
+	className,
+];
+---
+
+<span class:list={classes} {...rest}>
+	<slot />
+</span>

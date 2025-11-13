@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import GlowButton from '../../components/GlowButton.astro';
 import Header from '../../components/Header.astro';
+import PostCard from '../../components/PostCard.astro';
 import { themeConfig } from '../../theme.config';
 
 const posts = (await getCollection('blog')).sort(
@@ -56,23 +57,16 @@ const postStats = new Map(
 					{posts.map((post) => {
 						const stats = postStats.get(post.id);
 						return (
-							<li
-								class="featured-project featured-project--post"
-								style={post.data.heroImage ? `--project-image: url("${post.data.heroImage.src}")` : undefined}
+							<PostCard
+								href={`/blog/${post.id}/`}
+								title={post.data.title}
+								description={post.data.description}
+								statsLabel={stats?.label}
+								tag={tagLookup.get(post.id)}
+								image={post.data.heroImage?.src}
 							>
-								<a href={`/blog/${post.id}/`} class="featured-project__link">
-									<div class="featured-project__content">
-										<span class="featured-project__label">
-											<FormattedDate date={post.data.pubDate} />
-										</span>
-										<h3 class="featured-project__name">{post.data.title}</h3>
-										<p class="featured-project__description">{post.data.description}</p>
-										{stats?.label && <p class="featured-project__stats">{stats.label}</p>}
-										<span class="chip chip--ghost">{tagLookup.get(post.id)}</span>
-										<span class="featured-project__cta">ler artigo ↗</span>
-									</div>
-								</a>
-							</li>
+								<FormattedDate slot="label" date={post.data.pubDate} />
+							</PostCard>
 						);
 					})}
 				</ul>

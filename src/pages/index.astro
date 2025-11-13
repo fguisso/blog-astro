@@ -8,6 +8,7 @@ import HeroCanvas from '../components/HeroCanvas.astro';
 import Header from '../components/Header.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import FeaturedProjectCard from '../components/FeaturedProjectCard.astro';
+import PostCard from '../components/PostCard.astro';
 import { themeConfig } from '../theme.config';
 
 const posts = (await getCollection('blog')).sort(
@@ -132,24 +133,18 @@ const { site, featuredProjects } = themeConfig;
 						{latestInitial.map((post) => {
 							const stats = postStats.get(post.id);
 							return (
-							<li
-								class="featured-project featured-project--post"
-								style={post.data.heroImage ? `--project-image: url("${post.data.heroImage.src}")` : undefined}
-							>
-								<a href={`/blog/${post.id}/`} class="featured-project__link">
-									<div class="featured-project__content">
-										<span class="featured-project__label">
-											<FormattedDate date={post.data.pubDate} />
-										</span>
-										<h3 class="featured-project__name">{post.data.title}</h3>
-										<p class="featured-project__description">{post.data.description}</p>
-										{stats?.label && <p class="featured-project__stats">{stats.label}</p>}
-										<span class="chip chip--ghost">{tagLookup.get(post.id)}</span>
-										<span class="featured-project__cta">ler artigo ↗</span>
-									</div>
-								</a>
-							</li>
-						)})}
+								<PostCard
+									href={`/blog/${post.id}/`}
+									title={post.data.title}
+									description={post.data.description}
+									statsLabel={stats?.label}
+									tag={tagLookup.get(post.id)}
+									image={post.data.heroImage?.src}
+								>
+									<FormattedDate slot="label" date={post.data.pubDate} />
+								</PostCard>
+							);
+						})}
 					</ul>
 				{loadMorePool.length > 0 && (
 					<div class="center">
@@ -547,26 +542,6 @@ const { site, featuredProjects } = themeConfig;
 	.card--compact .card__media {
 		max-height: 220px;
 		object-fit: cover;
-	}
-
-	.chip {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.35rem;
-		padding: 0.35rem 0.9rem;
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.1);
-		color: var(--color-fg);
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.2em;
-		position: relative;
-		z-index: 1;
-	}
-
-	.chip--ghost {
-		background: rgba(255, 255, 255, 0.06);
-		border: 1px solid rgba(255, 255, 255, 0.15);
 	}
 
 	.center {

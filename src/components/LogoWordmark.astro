@@ -1,9 +1,25 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 
-type Props = HTMLAttributes<'svg'>;
+interface Props extends HTMLAttributes<'svg'> {
+	label?: string;
+	showLeftMarker?: boolean;
+	showRightMarker?: boolean;
+}
 
-const { class: className, ...rest } = Astro.props as Props;
+const {
+	label = 'guisso',
+	showLeftMarker = true,
+	showRightMarker = true,
+	class: className,
+	width,
+	...rest
+} = Astro.props as Props & { width?: number | string };
+const ariaLabel = (rest['aria-label'] as string | undefined) ?? `${label} logotipo`;
+
+const resolvedWidth = width ?? 180;
+const isMonogram = label.trim().toLowerCase() === 'g';
+const shouldRenderRight = showRightMarker && !isMonogram;
 ---
 
 <svg
@@ -11,19 +27,27 @@ const { class: className, ...rest } = Astro.props as Props;
 	viewBox="0 0 849.6 329.92"
 	class:list={['logo-wordmark', className]}
 	role="img"
-	aria-label="Guisso logotipo"
+	aria-label={ariaLabel}
+	width={resolvedWidth}
 	{...rest}
 >
-	<title>guisso</title>
-	<text transform="translate(5.52 250.66)" fill="currentColor">guisso</text>
-	<polygon points="60.34 198.02 84.8 150.91 107.45 198.02 60.34 198.02" fill="currentColor" />
-	<polygon points="741.17 161.02 765.63 208.13 788.28 161.02 741.17 161.02" fill="currentColor" />
+	<title>{label}</title>
+	<text transform="translate(5.52 250.66)" fill="currentColor">{label}</text>
+	{showLeftMarker && (
+		<>
+			<polygon points="60.34 198.02 84.8 150.91 107.45 198.02 60.34 198.02" fill="currentColor" />
+			{shouldRenderRight && (
+				<polygon points="741.17 161.02 765.63 208.13 788.28 161.02 741.17 161.02" fill="currentColor" />
+			)}
+		</>
+	)}
 </svg>
 
 <style>
 	.logo-wordmark {
 		display: block;
-		width: 180px;
+		width: auto;
+		max-width: 100%;
 		color: inherit;
 	}
 
