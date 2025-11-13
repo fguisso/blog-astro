@@ -1,65 +1,81 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import GlowButton from '../../components/GlowButton.astro';
 import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import { themeConfig } from '../../theme.config';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const tagPalette = ['Creative', 'Idea', 'Lifestyle', 'Review'];
+const tagLookup = new Map(posts.map((post, index) => [post.id, tagPalette[index % tagPalette.length]]));
+
+const wordsPerMinute = 200;
+const numberFormatter = new Intl.NumberFormat('pt-BR');
+const postStats = new Map(
+	posts.map((post) => {
+		const body = post.body ?? '';
+		const words = body ? body.trim().split(/\s+/).filter(Boolean).length : 0;
+		const minutes = Math.max(1, Math.round(words / wordsPerMinute));
+		return [
+			post.id,
+			{
+				label: words ? `${numberFormatter.format(words)} palavras · ${minutes} min` : null,
+			},
+		];
+	}),
 );
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<BaseHead title={`Blog | ${themeConfig.site.title}`} description={themeConfig.site.description} />
 	</head>
 	<body>
 		<Header />
 		<main class="page-shell blog-shell">
 			<section class="blog-header">
-				<p class="eyebrow">arquivo</p>
 				<h1>
 					Arquitetura de conteúdo com <span class="gradient-text">glow</span> — artigos, notas e
 					experimentos em MDX.
 				</h1>
 				<p>
-					Cada cartão segue o mesmo style guide: caixas com um halo suave, botões fantasma,
-					tipografia Oferta do Dia e Inter para destacar narrativas sobre front-end.
+					Aqui junto desenvolvimento seguro, playlists que movem meus sprints, ajustes infinitos no home lab e as
+					tecnologias que alimentam meus projetos neon. Tudo com o mesmo cuidado de UX e AppSec que levo para o willbank.
 				</p>
 				<GlowButton href="/rss.xml" variant="ghost" size="sm">Assinar RSS</GlowButton>
 			</section>
 
-			<section class="post-grid">
-				{
-					posts.map((post) => (
-						<article class="post-card glow-box">
-							<a href={`/blog/${post.id}/`} class="post-card__image">
-								{post.data.heroImage && (
-									<Image src={post.data.heroImage} alt="" width={720} height={360} loading="lazy" />
-								)}
-							</a>
-							<div class="post-card__body">
-								<p class="post-card__date">
-									<FormattedDate date={post.data.pubDate} />
-								</p>
-								<a href={`/blog/${post.id}/`}>
-									<h2>{post.data.title}</h2>
+			<section>
+				<ul class="featured-projects__grid featured-projects__grid--posts blog-posts-grid">
+					{posts.map((post) => {
+						const stats = postStats.get(post.id);
+						return (
+							<li
+								class="featured-project featured-project--post"
+								style={post.data.heroImage ? `--project-image: url("${post.data.heroImage.src}")` : undefined}
+							>
+								<a href={`/blog/${post.id}/`} class="featured-project__link">
+									<div class="featured-project__content">
+										<span class="featured-project__label">
+											<FormattedDate date={post.data.pubDate} />
+										</span>
+										<h3 class="featured-project__name">{post.data.title}</h3>
+										<p class="featured-project__description">{post.data.description}</p>
+										{stats?.label && <p class="featured-project__stats">{stats.label}</p>}
+										<span class="chip chip--ghost">{tagLookup.get(post.id)}</span>
+										<span class="featured-project__cta">ler artigo ↗</span>
+									</div>
 								</a>
-								<p class="text-muted">{post.data.description}</p>
-								<div class="post-card__actions">
-									<GlowButton href={`/blog/${post.id}/`} variant="outline" size="sm">
-										Continuar lendo
-									</GlowButton>
-								</div>
-							</div>
-						</article>
-					))
-				}
+							</li>
+						);
+					})}
+				</ul>
 			</section>
 		</main>
 		<Footer />
@@ -73,49 +89,15 @@ const posts = (await getCollection('blog')).sort(
 
 	.blog-header {
 		max-width: 760px;
-		margin-bottom: 3rem;
+		margin: 0 auto 3rem;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+		text-align: center;
+		align-items: center;
 	}
 
-	.post-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-		gap: 2rem;
-	}
-
-	.post-card__image {
-		display: block;
-		margin: -1.5rem -1.5rem 1.5rem;
-	}
-
-	.post-card__image img {
-		width: 100%;
-		display: block;
-		border-radius: var(--border-radius) var(--border-radius) 0 0;
-		box-shadow: none;
-	}
-
-	.post-card__date {
-		text-transform: uppercase;
-		letter-spacing: 0.2em;
-		font-size: 0.75rem;
-		color: var(--color-accent);
-		margin-bottom: 0.6rem;
-	}
-
-	.post-card__body h2 {
-		font-size: 1.75rem;
-	}
-
-	.post-card__actions {
-		margin-top: 1.5rem;
-	}
-
-	@media (max-width: 720px) {
-		.post-card__image {
-			margin: -1rem -1rem 1rem;
-		}
+	.blog-posts-grid {
+		margin-top: 2rem;
 	}
 </style>

@@ -7,7 +7,8 @@ import GlowButton from '../components/GlowButton.astro';
 import HeroCanvas from '../components/HeroCanvas.astro';
 import Header from '../components/Header.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import FeaturedProjectCard from '../components/FeaturedProjectCard.astro';
+import { themeConfig } from '../theme.config';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -16,15 +17,28 @@ const posts = (await getCollection('blog')).sort(
 const tagPalette = ['Creative', 'Idea', 'Lifestyle', 'Review'];
 const tagLookup = new Map(posts.map((post, index) => [post.id, tagPalette[index % tagPalette.length]]));
 
-const featuredPosts = posts.slice(0, 4);
-const featuredIds = new Set(featuredPosts.map((post) => post.id));
+const wordsPerMinute = 200;
+const numberFormatter = new Intl.NumberFormat('pt-BR');
+const postStats = new Map(
+	posts.map((post) => {
+		const body = post.body ?? '';
+		const words = body ? body.trim().split(/\s+/).filter(Boolean).length : 0;
+		const minutes = Math.max(1, Math.round(words / wordsPerMinute));
+		return [
+			post.id,
+			{
+				words,
+				minutes,
+				label: words ? `${numberFormatter.format(words)} palavras · ${minutes} min` : null,
+			},
+		];
+	}),
+);
 
-const nonFeaturedPosts = posts.filter((post) => !featuredIds.has(post.id));
-const latestInitial = nonFeaturedPosts.slice(0, 3);
-const loadMorePool = nonFeaturedPosts.slice(3);
+const latestInitial = posts.slice(0, 3);
+const loadMorePool = posts.slice(3);
 
 const consumedIds = new Set([
-	...featuredIds,
 	...latestInitial.map((post) => post.id),
 ]);
 const missedPosts = posts.filter((post) => !consumedIds.has(post.id)).slice(0, 4);
@@ -45,14 +59,18 @@ const loadMorePayload = JSON.stringify(
 		url: `/blog/${post.id}/`,
 		tag: tagLookup.get(post.id),
 		image: post.data.heroImage?.src ?? null,
+		date: post.data.pubDate?.toISOString() ?? null,
+		statsLabel: postStats.get(post.id)?.label ?? null,
 	})),
 );
+
+const { site, featuredProjects } = themeConfig;
 ---
 
 <!doctype html>
 <html lang="pt-BR">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<head>
+			<BaseHead title={site.title} description={site.description} />
 	</head>
 	<body>
 		<Header />
@@ -71,6 +89,11 @@ const loadMorePayload = JSON.stringify(
 						construir produtos seguros sem perder velocidade —
 						<span class="hero__line--alt">porque segurança boa é aquela que vem junto com o código.</span>
 					</p>
+					<p class="hero__line">
+						Quando sobra energia, perco horas afinando meu <strong>home lab</strong>: você encontra algumas histórias
+						com a tag <a href="/blog?tag=home-lab">home-lab</a> ou mergulha nos detalhes técnicos dentro da{' '}
+						<a href="https://wiki.guisso.dev/linux/homelab" target="_blank" rel="noopener noreferrer">minha wiki</a>.
+					</p>
 					<div class="hero__cta">
 						<GlowButton href="#latest" variant="accent" size="lg">Ver posts</GlowButton>
 						<GlowButton href="/blog" variant="ghost" size="lg">Arquivo completo</GlowButton>
@@ -79,79 +102,55 @@ const loadMorePayload = JSON.stringify(
 				<HeroCanvas />
 			</section>
 
-			{featuredPosts.length > 0 && (
-				<section class="featured">
-					<div class="section-head">
-						<p class="eyebrow">featured picks</p>
-						<h2>Quatro histórias em destaque com camadas neon</h2>
+			{featuredProjects.length > 0 && (
+				<section class="featured-projects">
+					<div class="featured-projects__head">
+						<div class="featured-projects__head-text">
+							<p class="eyebrow">featured projects</p>
+							<h2 class="featured-projects__title">Laboratórios em que estou trabalhando agora</h2>
+						</div>
+						<GlowButton href="/projects" variant="ghost" size="sm">Ver projetos</GlowButton>
 					</div>
-					<ul class="card-grid card-grid--featured">
-						{featuredPosts.map((post) => (
-							<li class="card card--featured">
-								<a href={`/blog/${post.id}/`} class="card__link">
-									{post.data.heroImage && (
-										<Image
-											src={post.data.heroImage}
-											alt=""
-											width={640}
-											height={360}
-											loading="lazy"
-											class="card__media"
-											data-lazy
-										/>
-									)}
-									<span class="chip">{tagLookup.get(post.id)}</span>
-									<div class="card__body">
-										<p class="card__meta">Featured</p>
-										<h3>{post.data.title}</h3>
-									</div>
-								</a>
-							</li>
+						<ul class="featured-projects__grid">
+							{featuredProjects.map((project) => (
+							<FeaturedProjectCard project={project} />
 						))}
 					</ul>
 				</section>
 			)}
 
-			<section id="latest" class="latest">
-				<div class="section-head section-head--split">
-					<div>
-						<p class="eyebrow">new posts</p>
-						<h2>
-							See what we’ve <em>written lately</em>
-						</h2>
+				<section id="latest" class="latest">
+					<div class="section-head section-head--split">
+						<div>
+							<p class="eyebrow">new posts</p>
+							<h2>
+								See what we’ve <em>written lately</em>
+							</h2>
+						</div>
 					</div>
-					<p class="text-muted">
-						A grade alterna um card hero e dois médios — toque no botão para carregar mais textos do
-						arquivo sem recarregar a página.
-					</p>
-				</div>
-				<ul id="latest-grid" class="card-grid card-grid--latest">
-					{latestInitial.map((post, index) => (
-						<li class={`card ${index === 0 ? 'card--hero' : 'card--stacked'}`}>
-							<a href={`/blog/${post.id}/`} class="card__link">
-								{post.data.heroImage && (
-									<Image
-										src={post.data.heroImage}
-										alt=""
-										width={800}
-										height={540}
-										loading="lazy"
-										class="card__media"
-										data-lazy
-									/>
-								)}
-								<div class="card__body">
-									<span class="chip chip--ghost">{tagLookup.get(post.id)}</span>
-									<h3>{post.data.title}</h3>
-									<p class="text-muted">{post.data.description}</p>
-									<p class="card__meta">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</div>
-							</a>
-						</li>
-					))}
-				</ul>
+					<ul id="latest-grid" class="featured-projects__grid featured-projects__grid--posts">
+						{latestInitial.map((post) => {
+							const stats = postStats.get(post.id);
+							return (
+							<li
+								class="featured-project featured-project--post"
+								style={post.data.heroImage ? `--project-image: url("${post.data.heroImage.src}")` : undefined}
+							>
+								<a href={`/blog/${post.id}/`} class="featured-project__link">
+									<div class="featured-project__content">
+										<span class="featured-project__label">
+											<FormattedDate date={post.data.pubDate} />
+										</span>
+										<h3 class="featured-project__name">{post.data.title}</h3>
+										<p class="featured-project__description">{post.data.description}</p>
+										{stats?.label && <p class="featured-project__stats">{stats.label}</p>}
+										<span class="chip chip--ghost">{tagLookup.get(post.id)}</span>
+										<span class="featured-project__cta">ler artigo ↗</span>
+									</div>
+								</a>
+							</li>
+						)})}
+					</ul>
 				{loadMorePool.length > 0 && (
 					<div class="center">
 						<GlowButton data-load-more variant="accent" size="sm">Load more</GlowButton>
@@ -159,39 +158,6 @@ const loadMorePayload = JSON.stringify(
 				)}
 			</section>
 
-			{missedPosts.length > 0 && (
-				<section class="missed">
-					<div class="section-head section-head--arrow">
-						<h2>
-							In case you <em>missed it</em>
-						</h2>
-						<span aria-hidden="true" class="arrow">→</span>
-					</div>
-					<ul class="card-grid card-grid--missed">
-						{missedPosts.map((post) => (
-							<li class="card card--compact">
-								<a href={`/blog/${post.id}/`} class="card__link">
-									{post.data.heroImage && (
-										<Image
-											src={post.data.heroImage}
-											alt=""
-											width={520}
-											height={520}
-											loading="lazy"
-											class="card__media"
-											data-lazy
-										/>
-									)}
-									<div class="card__body">
-										<span class="chip chip--ghost">{tagLookup.get(post.id)}</span>
-										<h3>{post.data.title}</h3>
-									</div>
-								</a>
-							</li>
-						))}
-					</ul>
-				</section>
-			)}
 		</main>
 		<Footer />
 
@@ -237,14 +203,25 @@ const loadMorePayload = JSON.stringify(
 
 			const createCard = (payload) => {
 				const li = document.createElement('li');
-				li.className = 'card card--stacked';
+				li.className = 'featured-project featured-project--post';
+				if (payload.image) {
+					li.style.setProperty('--project-image', `url("${payload.image}")`);
+				}
+				const formattedDate = payload.date
+					? new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(
+							new Date(payload.date),
+					  )
+					: 'Post';
+				const statsLabel = payload.statsLabel ?? '';
 				li.innerHTML = `
-        <a class="card__link" href="${payload.url}">
-          ${payload.image ? `<img class="card__media" src="${payload.image}" alt="" loading="lazy" decoding="async" data-lazy />` : ''}
-          <div class="card__body">
+        <a class="featured-project__link" href="${payload.url}">
+          <div class="featured-project__content">
+            <span class="featured-project__label">${formattedDate}</span>
+            <h3 class="featured-project__name">${payload.title}</h3>
+            <p class="featured-project__description">${payload.description}</p>
+            ${statsLabel ? `<p class="featured-project__stats">${statsLabel}</p>` : ''}
             <span class="chip chip--ghost">${payload.tag ?? 'Insight'}</span>
-            <h3>${payload.title}</h3>
-            <p class="text-muted">${payload.description}</p>
+            <span class="featured-project__cta">ler artigo ↗</span>
           </div>
         </a>
       `;
@@ -482,20 +459,13 @@ const loadMorePayload = JSON.stringify(
 		color: var(--color-secondary);
 	}
 
+
 	.card-grid {
 		list-style: none;
 		padding: 0;
 		margin: 0;
 		display: grid;
 		gap: 1.5rem;
-	}
-
-	.card-grid--featured {
-		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-	}
-
-	.card-grid--latest {
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 	}
 
 	.card-grid--missed {
@@ -568,28 +538,10 @@ const loadMorePayload = JSON.stringify(
 		margin: 0;
 	}
 
-	.card--featured .card__body {
-		position: absolute;
-		inset: auto 1.5rem 1.5rem;
-	}
-
-	.card--featured .card__link {
-		justify-content: flex-end;
-	}
-
-	.card--featured .card__media {
-		height: 100%;
-		object-fit: cover;
-	}
-
-	.card--hero .card__media {
-		max-height: 360px;
-		object-fit: cover;
-	}
-
-	.card--stacked .card__media {
-		max-height: 240px;
-		object-fit: cover;
+	.card__meta--stats {
+		font-size: 0.75rem;
+		letter-spacing: 0.25em;
+		color: rgba(255, 255, 255, 0.65);
 	}
 
 	.card--compact .card__media {
@@ -617,20 +569,13 @@ const loadMorePayload = JSON.stringify(
 		border: 1px solid rgba(255, 255, 255, 0.15);
 	}
 
-	.card--featured .chip {
-		position: absolute;
-		top: 1rem;
-		left: 1rem;
-	}
-
 	.center {
 		margin-top: 2rem;
 		text-align: center;
 	}
 
-	.featured,
-	.latest,
-	.missed {
+	.featured-projects,
+	.latest {
 		margin-bottom: 4rem;
 	}
 

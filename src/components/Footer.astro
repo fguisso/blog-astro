@@ -77,10 +77,13 @@ const today = new Date();
 	.site-footer::before {
 		content: '';
 		position: absolute;
-		inset: 0;
-		background: radial-gradient(circle at 10% 20%, rgba(0, 255, 127, 0.25), transparent 50%);
-		filter: blur(80px);
-		opacity: 0.9;
+		inset: -10% -20%;
+		background:
+			radial-gradient(circle at 15% 15%, rgba(110, 110, 255, 0.25), transparent 55%),
+			radial-gradient(circle at 85% 25%, rgba(154, 26, 255, 0.22), transparent 50%),
+			radial-gradient(circle at 35% 80%, rgba(0, 255, 127, 0.18), transparent 45%);
+		filter: blur(90px);
+		opacity: 0.85;
 	}
 
 	.footer-grid {

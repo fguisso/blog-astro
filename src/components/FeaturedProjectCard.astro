@@ -1,0 +1,16 @@
+---
+import type { FeaturedProject } from '../theme.config';
+
+const { project } = Astro.props as { project: FeaturedProject };
+---
+
+<li class="featured-project" style={`--project-image: url("${project.image}")`}>
+	<a href={project.url} class="featured-project__link" target="_blank" rel="noopener noreferrer">
+		<div class="featured-project__content">
+			<span class="featured-project__label">Projeto</span>
+			<h3 class="featured-project__name">{project.title}</h3>
+			<p class="featured-project__description">{project.description}</p>
+			<span class="featured-project__cta">abrir ↗</span>
+		</div>
+	</a>
+</li>
