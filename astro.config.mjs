@@ -5,12 +5,13 @@ import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 import { themeConfig } from './src/theme.config';
 
-const rawSite = process.env.SITE_URL ?? themeConfig.site.url;
-const siteUrl = new URL(rawSite);
+const siteEnv = process.env.SITE_URL;
 const baseEnv = process.env.PUBLIC_BASE_PATH ?? process.env.BASE_PATH;
+const defaultSite = themeConfig.site?.url ?? 'http://localhost:4321/';
+const siteUrl = new URL(siteEnv ?? defaultSite);
 
-function normalizeBase(value, fallback) {
-	const raw = value ?? fallback;
+function normalizeBase(value, fallback = '/') {
+	const raw = value ?? fallback ?? '/';
 	if (!raw || raw === '/') {
 		return '/';
 	}
@@ -19,7 +20,7 @@ function normalizeBase(value, fallback) {
 	return cleaned ? `/${cleaned}` : '/';
 }
 
-const inferredBase = siteUrl.pathname === '/' ? '/' : siteUrl.pathname;
+const inferredBase = siteUrl.pathname || '/';
 const normalizedBase = normalizeBase(baseEnv, inferredBase);
 const siteOrigin = siteUrl.origin;
 

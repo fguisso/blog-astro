@@ -7,7 +7,7 @@ import GlowButton from '../../components/GlowButton.astro';
 import Header from '../../components/Header.astro';
 import { themeConfig } from '../../theme.config';
 import { groupPostsByTag } from '../../utils/tags';
-import { withBase } from '../../utils/paths';
+import { routes } from '../../utils/routes';
 
 const posts = await getCollection('blog');
 const tagMap = groupPostsByTag(posts);
@@ -15,12 +15,12 @@ const tags = Array.from(tagMap.entries()).map(([slug, group]) => ({
 	slug,
 	label: group.label,
 	count: group.posts.length,
-	feedHref: withBase(`/tags/${slug}.xml`),
+	feedHref: routes.tagFeed(slug),
 }));
 
 tags.sort((a, b) => (b.count - a.count) || a.label.localeCompare(b.label, 'pt-BR'));
-const homeHref = withBase('/');
-const blogHref = withBase('/blog');
+const homeHref = routes.home();
+const blogHref = routes.blog();
 ---
 
 <!doctype html>

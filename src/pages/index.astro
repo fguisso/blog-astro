@@ -11,6 +11,7 @@ import FeaturedProjectCard from '../components/FeaturedProjectCard.astro';
 import PostCard from '../components/PostCard.astro';
 import { themeConfig } from '../theme.config';
 import { withBase } from '../utils/paths';
+import { routes } from '../utils/routes';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -67,9 +68,9 @@ const loadMorePayload = JSON.stringify(
 );
 
 const { site, featuredProjects } = themeConfig;
-const homeLabTagHref = withBase('/blog?tag=home-lab');
-const projectsHref = withBase('/projects');
-const blogHref = withBase('/blog');
+const homeLabTagHref = routes.blogTagFilter('home-lab');
+const projectsHref = routes.projects();
+const blogHref = routes.blog();
 ---
 
 <!doctype html>

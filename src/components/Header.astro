@@ -2,17 +2,17 @@
 import HeaderLink from './HeaderLink.astro';
 import LogoWordmark from './LogoWordmark.astro';
 import TalkAvatarBadge from './TalkAvatarBadge.astro';
-import { withBase } from '../utils/paths';
+import { routes } from '../utils/routes';
 
-const homeHref = withBase('/');
-const aboutHref = withBase('/about');
+const homeHref = routes.home();
+const aboutHref = routes.about();
 
 const navLinks = [
-	{ href: '/', label: 'Home' },
-	{ href: '/blog', label: 'Blog' },
-	{ href: '/projects', label: 'Projetos' },
-	{ href: '/talk', label: 'Talks' },
-	{ href: '/tags', label: 'Tags' },
+	{ href: routes.home(), label: 'Home' },
+	{ href: routes.blog(), label: 'Blog' },
+	{ href: routes.projects(), label: 'Projetos' },
+	{ href: routes.talks(), label: 'Talks' },
+	{ href: routes.tags(), label: 'Tags' },
 ];
 ---
 

@@ -1,15 +1,15 @@
 ---
 import GlowButton from './GlowButton.astro';
 import LogoWordmark from './LogoWordmark.astro';
-import { withBase } from '../utils/paths';
+import { routes } from '../utils/routes';
 
 const today = new Date();
-const rssHref = withBase('/rss.xml');
+const rssHref = routes.rss();
 const navLinks = [
-	{ href: withBase('/'), label: 'Home' },
-	{ href: withBase('/blog'), label: 'Blog' },
-	{ href: withBase('/about'), label: 'About' },
-	{ href: withBase('/style-guide'), label: 'Style Guide' },
+	{ href: routes.home(), label: 'Home' },
+	{ href: routes.blog(), label: 'Blog' },
+	{ href: routes.about(), label: 'About' },
+	{ href: routes.styleGuide(), label: 'Style Guide' },
 ];
 ---
 
