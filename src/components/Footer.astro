@@ -1,8 +1,16 @@
 ---
 import GlowButton from './GlowButton.astro';
 import LogoWordmark from './LogoWordmark.astro';
+import { withBase } from '../utils/paths';
 
 const today = new Date();
+const rssHref = withBase('/rss.xml');
+const navLinks = [
+	{ href: withBase('/'), label: 'Home' },
+	{ href: withBase('/blog'), label: 'Blog' },
+	{ href: withBase('/about'), label: 'About' },
+	{ href: withBase('/style-guide'), label: 'Style Guide' },
+];
 ---
 
 <footer class="site-footer">
@@ -13,16 +21,17 @@ const today = new Date();
 				Explorações visuais, notas sobre front-end e experimentos com brilho neon — sempre inspirados
 				no style guide.
 			</p>
-			<GlowButton href="/rss.xml" variant="ghost" size="sm">Assinar RSS</GlowButton>
+			<GlowButton href={rssHref} variant="ghost" size="sm">Assinar RSS</GlowButton>
 		</div>
 
 		<div>
 			<p class="eyebrow">Navegação</p>
 			<ul class="footer-links">
-				<li><a href="/">Home</a></li>
-				<li><a href="/blog">Blog</a></li>
-				<li><a href="/about">About</a></li>
-				<li><a href="/style-guide">Style Guide</a></li>
+				{navLinks.map((link) => (
+					<li>
+						<a href={link.href}>{link.label}</a>
+					</li>
+				))}
 			</ul>
 		</div>
 

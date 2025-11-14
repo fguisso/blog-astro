@@ -10,6 +10,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 import FeaturedProjectCard from '../components/FeaturedProjectCard.astro';
 import PostCard from '../components/PostCard.astro';
 import { themeConfig } from '../theme.config';
+import { withBase } from '../utils/paths';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -48,7 +49,7 @@ const searchPayload = JSON.stringify(
 	posts.map((post) => ({
 		title: post.data.title,
 		description: post.data.description,
-		url: `/blog/${post.id}/`,
+		url: withBase(`/blog/${post.id}/`),
 		tag: tagLookup.get(post.id),
 	})),
 );
@@ -57,15 +58,18 @@ const loadMorePayload = JSON.stringify(
 	loadMorePool.map((post) => ({
 		title: post.data.title,
 		description: post.data.description,
-		url: `/blog/${post.id}/`,
+		url: withBase(`/blog/${post.id}/`),
 		tag: tagLookup.get(post.id),
-		image: post.data.heroImage?.src ?? null,
+		image: post.data.heroImage?.src ? withBase(post.data.heroImage.src) : null,
 		date: post.data.pubDate?.toISOString() ?? null,
 		statsLabel: postStats.get(post.id)?.label ?? null,
 	})),
 );
 
 const { site, featuredProjects } = themeConfig;
+const homeLabTagHref = withBase('/blog?tag=home-lab');
+const projectsHref = withBase('/projects');
+const blogHref = withBase('/blog');
 ---
 
 <!doctype html>
@@ -92,12 +96,12 @@ const { site, featuredProjects } = themeConfig;
 					</p>
 					<p class="hero__line">
 						Quando sobra energia, perco horas afinando meu <strong>home lab</strong>: você encontra algumas histórias
-						com a tag <a href="/blog?tag=home-lab">home-lab</a> ou mergulha nos detalhes técnicos dentro da{' '}
+						com a tag <a href={homeLabTagHref}>home-lab</a> ou mergulha nos detalhes técnicos dentro da{' '}
 						<a href="https://wiki.guisso.dev/linux/homelab" target="_blank" rel="noopener noreferrer">minha wiki</a>.
 					</p>
 					<div class="hero__cta">
 						<GlowButton href="#latest" variant="accent" size="lg">Ver posts</GlowButton>
-						<GlowButton href="/blog" variant="ghost" size="lg">Arquivo completo</GlowButton>
+						<GlowButton href={blogHref} variant="ghost" size="lg">Arquivo completo</GlowButton>
 					</div>
 				</div>
 				<HeroCanvas />
@@ -110,7 +114,7 @@ const { site, featuredProjects } = themeConfig;
 							<p class="eyebrow">projetos principais</p>
               <h1 class="featured-projects__title"><span class="display-special primary">Projetos</span> em que estou trabalhando agora</h2>
 						</div>
-						<GlowButton href="/projects" variant="ghost" size="sm">Ver projetos</GlowButton>
+						<GlowButton href={projectsHref} variant="ghost" size="sm">Ver projetos</GlowButton>
 					</div>
 						<ul class="featured-projects__grid">
 							{featuredProjects.map((project) => (
@@ -146,9 +150,9 @@ const { site, featuredProjects } = themeConfig;
 							);
 						})}
 					</ul>
-				{loadMorePool.length > 0 && (
+					{loadMorePool.length > 0 && (
 					<div class="center">
-						<GlowButton href={`/blog`} variant="accent" size="sm">Veja mais</GlowButton>
+						<GlowButton href={blogHref} variant="accent" size="sm">Veja mais</GlowButton>
 					</div>
 				)}
 			</section>

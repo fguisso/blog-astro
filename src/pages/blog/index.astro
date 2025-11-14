@@ -7,6 +7,7 @@ import GlowButton from '../../components/GlowButton.astro';
 import Header from '../../components/Header.astro';
 import PostCard from '../../components/PostCard.astro';
 import { themeConfig } from '../../theme.config';
+import { withBase } from '../../utils/paths';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -27,6 +28,9 @@ const postStats = new Map(
 		];
 	}),
 );
+
+const rssHref = withBase('/rss.xml');
+const tagsHref = withBase('/tags');
 ---
 
 <!doctype html>
@@ -47,8 +51,8 @@ const postStats = new Map(
 					tecnologias que alimentam meus projetos.
 				</p>
 				<div class="blog-header__actions">
-					<GlowButton href="/rss.xml" variant="ghost" size="sm">Assinar RSS</GlowButton>
-					<GlowButton href="/tags" variant="ghost" size="sm">Explorar tags</GlowButton>
+					<GlowButton href={rssHref} variant="ghost" size="sm">Assinar RSS</GlowButton>
+					<GlowButton href={tagsHref} variant="ghost" size="sm">Explorar tags</GlowButton>
 				</div>
 			</section>
 

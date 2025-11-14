@@ -128,7 +128,7 @@
 								Você encontrou meu feed RSS. Use o endereço desta página no seu leitor de RSS favorito.
 							</p>
 							<div class="feed-actions">
-								<a href="/" class="feed-home">← Voltar para home</a>
+								<a href="{rss/channel/homeLink}" class="feed-home">← Voltar para home</a>
 							</div>
 						</header>
 					<ul class="feed-item">

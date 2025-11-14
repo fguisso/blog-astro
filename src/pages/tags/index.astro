@@ -7,6 +7,7 @@ import GlowButton from '../../components/GlowButton.astro';
 import Header from '../../components/Header.astro';
 import { themeConfig } from '../../theme.config';
 import { groupPostsByTag } from '../../utils/tags';
+import { withBase } from '../../utils/paths';
 
 const posts = await getCollection('blog');
 const tagMap = groupPostsByTag(posts);
@@ -14,9 +15,12 @@ const tags = Array.from(tagMap.entries()).map(([slug, group]) => ({
 	slug,
 	label: group.label,
 	count: group.posts.length,
+	feedHref: withBase(`/tags/${slug}.xml`),
 }));
 
 tags.sort((a, b) => (b.count - a.count) || a.label.localeCompare(b.label, 'pt-BR'));
+const homeHref = withBase('/');
+const blogHref = withBase('/blog');
 ---
 
 <!doctype html>
@@ -37,8 +41,8 @@ tags.sort((a, b) => (b.count - a.count) || a.label.localeCompare(b.label, 'pt-BR
 						gera um feed próprio para você assinar apenas o tema que quiser.
 					</p>
 					<div class="tags-header__actions">
-						<GlowButton href="/" variant="ghost" size="sm">← Voltar para home</GlowButton>
-						<GlowButton href="/blog" variant="ghost" size="sm">Blog completo</GlowButton>
+						<GlowButton href={homeHref} variant="ghost" size="sm">← Voltar para home</GlowButton>
+						<GlowButton href={blogHref} variant="ghost" size="sm">Blog completo</GlowButton>
 					</div>
 				</section>
 
@@ -47,7 +51,7 @@ tags.sort((a, b) => (b.count - a.count) || a.label.localeCompare(b.label, 'pt-BR
 					<ul class="tags-grid">
 						{tags.map((tag) => (
 								<li class="tags-grid__item" aria-label={`Tag ${tag.label}`}>
-									<a href={`/tags/${tag.slug}.xml`} class="tags-grid__link">
+									<a href={tag.feedHref} class="tags-grid__link">
 										<Chip>{tag.label}</Chip>
 										<span class="tags-grid__count">
 											{tag.count} {tag.count === 1 ? 'artigo' : 'artigos'}

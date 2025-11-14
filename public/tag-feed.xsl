@@ -126,7 +126,7 @@
 						<p class="feed-description">
 							<xsl:value-of select="rss/channel/description" />
 						</p>
-						<a href="/" class="feed-home">← Voltar para home</a>
+						<a href="{rss/channel/homeLink}" class="feed-home">← Voltar para home</a>
 					</header>
 					<ul class="feed-item">
 						<xsl:for-each select="rss/channel/item">

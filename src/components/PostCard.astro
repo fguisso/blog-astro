@@ -1,6 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import Chip from './Chip.astro';
+import { withBase } from '../utils/paths';
 
 interface Props extends HTMLAttributes<'li'> {
 	href: string;
@@ -23,11 +24,13 @@ const {
 	class: className,
 	...rest
 } = Astro.props as Props;
-const style = image ? `--project-image: url("${image}")` : undefined;
+const backgroundImage = image ? withBase(image) : null;
+const style = backgroundImage ? `--project-image: url("${backgroundImage}")` : undefined;
+const resolvedHref = withBase(href);
 ---
 
 <li class:list={['featured-project', 'featured-project--post', className]} style={style} {...rest}>
-	<a href={href} class="featured-project__link">
+	<a href={resolvedHref} class="featured-project__link">
 		<div class="featured-project__content">
 			<span class="featured-project__label">
 				<slot name="label">Meta</slot>

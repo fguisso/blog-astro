@@ -2,12 +2,16 @@
 import HeaderLink from './HeaderLink.astro';
 import LogoWordmark from './LogoWordmark.astro';
 import TalkAvatarBadge from './TalkAvatarBadge.astro';
+import { withBase } from '../utils/paths';
+
+const homeHref = withBase('/');
+const aboutHref = withBase('/about');
 ---
 
 <header class="site-header">
 	<div class="page-shell">
 		<div class="nav-bar">
-			<a href="/" aria-label="Ir para a página inicial" class="logo-link">
+			<a href={homeHref} aria-label="Ir para a página inicial" class="logo-link">
 				<LogoWordmark />
 			</a>
 				<nav class="nav-links">
@@ -17,11 +21,7 @@ import TalkAvatarBadge from './TalkAvatarBadge.astro';
 					<HeaderLink href="/tags">Tags</HeaderLink>
 				</nav>
 				<div class="nav-cta">
-					<a
-						class="nav-avatar-link"
-						href="/about"
-						aria-label="Ir para a página Sobre"
-					>
+					<a class="nav-avatar-link" href={aboutHref} aria-label="Ir para a página Sobre">
 						<TalkAvatarBadge />
 					</a>
 				</div>

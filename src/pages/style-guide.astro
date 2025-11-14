@@ -11,6 +11,7 @@ import LogoWordmark from '../components/LogoWordmark.astro';
 import PostCard from '../components/PostCard.astro';
 import Chip from '../components/Chip.astro';
 import { themeConfig } from '../theme.config';
+import { withBase } from '../utils/paths';
 
 const palette = [
 	{ name: 'Fundo base', token: '--color-bg', value: '#020204' },
@@ -124,6 +125,8 @@ const logoMarks = [
 
 const { site, featuredProjects } = themeConfig;
 const projectSamples = featuredProjects.slice(0, 2);
+const projectsHref = withBase('/projects');
+const samplePostHref = withBase('/blog/exemplo/');
 ---
 
 <!doctype html>
@@ -150,7 +153,7 @@ const projectSamples = featuredProjects.slice(0, 2);
 					</p>
 				<div class="style-guide__hero-cta">
 					<GlowButton href="#componentes" variant="accent" size="lg">Ver componentes</GlowButton>
-					<GlowButton href="/projects" variant="ghost" size="lg">Projetos que usam o kit</GlowButton>
+					<GlowButton href={projectsHref} variant="ghost" size="lg">Projetos que usam o kit</GlowButton>
 				</div>
 			</section>
 
@@ -344,7 +347,7 @@ const projectSamples = featuredProjects.slice(0, 2);
 					<ul class="featured-projects__grid featured-projects__grid--posts">
 						{postSamples.map((post) => (
 							<PostCard
-								href="/blog/exemplo/"
+								href={samplePostHref}
 								title={post.title}
 								description={post.description}
 								statsLabel={post.stats}

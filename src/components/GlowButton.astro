@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
+import { withBase } from '../utils/paths';
 
 type Variant = 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
@@ -11,6 +12,7 @@ interface Props extends HTMLAttributes<'button'> {
 }
 
 const { href, variant = 'primary', size = 'md', class: className, ...rest } = Astro.props as Props;
+const resolvedHref = typeof href === 'string' ? withBase(href) : undefined;
 const classes = [
 	'btn',
 	`btn-${variant}`,
@@ -22,8 +24,8 @@ const classes = [
 ];
 ---
 
-{href ? (
-	<a href={href} class:list={classes} {...rest}>
+{resolvedHref ? (
+	<a href={resolvedHref} class:list={classes} {...rest}>
 		<slot />
 	</a>
 ) : (
