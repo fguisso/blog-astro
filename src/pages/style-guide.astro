@@ -102,6 +102,24 @@ const postSamples = [
 	},
 ];
 
+const eyebrowSamples = [
+	{
+		text: 'style guide',
+		label: 'Hero / Contexto',
+		usage: 'Acima de H1 para indicar o tipo de página ou seção principal.',
+	},
+	{
+		text: 'componentes',
+		label: 'Seções internas',
+		usage: 'Divide blocos extensos e ajuda a criar ritmo em páginas longas.',
+	},
+	{
+		text: 'insight rápido',
+		label: 'Cards e meta',
+		usage: 'Em cards, callouts e post meta para reforçar o assunto.',
+	},
+];
+
 const logoMarks = [
 	{
 		label: 'Monograma G',
@@ -242,6 +260,28 @@ const samplePostHref = routes.blogPost('exemplo');
 				</GlowBox>
 			</section>
 
+			<section class="style-guide__section" id="eyebrows">
+				<div class="style-guide__section-head">
+					<p class="eyebrow">micro labels</p>
+					<h2>Eyebrows oficiais</h2>
+					<p>Labels em caixa baixa com tracking amplo reforçam a narrativa neon e antecedem qualquer heading.</p>
+				</div>
+				<GlowBox accent="secondary" class="style-guide__panel">
+					<div class="eyebrow-grid">
+						{eyebrowSamples.map((item) => (
+							<div class="eyebrow-card">
+								<p class="eyebrow">{item.text}</p>
+								<p class="eyebrow-card__label">{item.label}</p>
+								<p class="eyebrow-card__usage">{item.usage}</p>
+							</div>
+						))}
+					</div>
+					<p class="eyebrow-note">
+						Sempre use a classe <code>.eyebrow</code>: fonte Inter uppercase, tracking generoso e cor <code>var(--color-muted)</code>. Nunca troque por bold.
+					</p>
+				</GlowBox>
+			</section>
+
 			<section class="style-guide__section" id="componentes">
 				<div class="style-guide__section-head">
 					<p class="eyebrow">componentes</p>
@@ -284,6 +324,57 @@ const samplePostHref = routes.blogPost('exemplo');
 					</GlowBox>
 				</section>
 
+			<section class="style-guide__section" id="post-meta-inline">
+				<div class="style-guide__section-head">
+					<p class="eyebrow">posts</p>
+					<h2>Meta inline do artigo</h2>
+					<p>Publicado + contagem de palavras + tempo em linha, acima dos chips. Sem bordas, só ícone e texto.</p>
+				</div>
+				<GlowBox accent="accent" class="style-guide__panel post-meta-panel">
+					<div class="post-meta-preview__card">
+						<p class="eyebrow">meta inline</p>
+						<h3>Usar antes das tags</h3>
+						<div class="post-meta__info">
+							<span class="post-meta__entry">
+								<span class="post-meta__icon" aria-hidden="true">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+										<rect x="3" y="4" width="18" height="17" rx="3" />
+										<path d="M8 2v4m8-4v4" stroke-linecap="round" />
+										<path d="M3 10h18" />
+									</svg>
+								</span>
+								<span class="post-meta__text">12 jan 2025</span>
+							</span>
+							<span class="post-meta__entry">
+								<span class="post-meta__icon" aria-hidden="true">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+										<path d="M6 7h12M6 12h12M6 17h7" stroke-linecap="round" />
+									</svg>
+								</span>
+								<span class="post-meta__text">1.200 palavras</span>
+							</span>
+							<span class="post-meta__entry">
+								<span class="post-meta__icon" aria-hidden="true">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+										<circle cx="12" cy="12" r="8.5" />
+										<path d="M12 8v4l2.25 1.5" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</span>
+								<span class="post-meta__text">7 min</span>
+							</span>
+						</div>
+						<div class="post-meta-preview__chips">
+							<Chip>AppSec</Chip>
+							<Chip>Infra</Chip>
+							<Chip variant="solid">Release</Chip>
+						</div>
+					</div>
+					<p class="post-meta-preview__note">
+						As métricas usam <code>.post-meta__text</code> com peso 500 e ícones em verde neon. Empilhe em telas pequenas, mantendo o gap padrão.
+					</p>
+				</GlowBox>
+			</section>
+
 			<section class="style-guide__section" id="layouts">
 				<div class="style-guide__section-head">
 					<p class="eyebrow">blocos base</p>
@@ -320,6 +411,49 @@ const samplePostHref = routes.blogPost('exemplo');
 						</Callout>
 					</GlowBox>
 				</div>
+			</section>
+
+			<section class="style-guide__section" id="utility-buttons">
+				<div class="style-guide__section-head">
+					<p class="eyebrow">controles</p>
+					<h2>Botões utilitários</h2>
+					<p>GitHub circular e botão hamburguer seguem o mesmo glow suave e devem ser usados como estão.</p>
+				</div>
+				<GlowBox accent="secondary" class="style-guide__panel">
+					<div class="utility-grid">
+						<div class="utility-card">
+							<p class="eyebrow">github</p>
+							<div class="utility-card__preview">
+								<a href="https://github.com/guisso" class="icon-button" aria-label="Perfis no GitHub">
+									<svg viewBox="0 0 16 16" aria-hidden="true">
+										<path
+											fill="currentColor"
+											d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+										></path>
+									</svg>
+								</a>
+							</div>
+							<p class="utility-card__description">
+								Círculo 48x48px com borda translúcida, fundo em mesh discreto e ícone branco. Hover eleva 2px e troca a borda para neon.
+							</p>
+						</div>
+						<div class="utility-card">
+							<p class="eyebrow">hamburger</p>
+							<div class="utility-card__preview utility-card__preview--stacked">
+								<button type="button" class="utility-hamburger" aria-label="Abrir menu mobile">
+									<span class="utility-hamburger__icon" aria-hidden="true">
+										<span></span>
+										<span></span>
+										<span></span>
+									</span>
+								</button>
+							</div>
+							<p class="utility-card__description">
+								Botão circular 52px, borda 1px rgba(255,255,255,0.12) e radial com roxo/azul. As linhas usam gradiente verde→azul.
+							</p>
+						</div>
+					</div>
+				</GlowBox>
 			</section>
 
 			<section class="style-guide__section" id="cards">
@@ -684,6 +818,69 @@ const samplePostHref = routes.blogPost('exemplo');
 		font-size: 0.95rem;
 	}
 
+	.post-meta__info {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1.25rem;
+		font-size: 0.95rem;
+		color: var(--color-muted);
+	}
+
+	.post-meta__entry {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.post-meta__text {
+		color: var(--color-fg);
+		font-weight: 500;
+	}
+
+	.post-meta__icon {
+		width: 1.1rem;
+		height: 1.1rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #00ff7f;
+	}
+
+	.post-meta__icon svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	.post-meta-panel {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.post-meta-preview__card {
+		padding: 1.5rem;
+		border-radius: 1.25rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(6, 6, 9, 0.95);
+		box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.35);
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+	}
+
+	.post-meta-preview__chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.post-meta-preview__note {
+		margin: 0;
+		color: var(--color-muted);
+		font-size: 0.95rem;
+	}
+
 	.type-samples {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -705,6 +902,127 @@ const samplePostHref = routes.blogPost('exemplo');
 	.type-samples p {
 		margin: 0;
 		color: var(--color-muted);
+	}
+
+	.eyebrow-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1rem;
+	}
+
+	.eyebrow-card {
+		padding: 1rem;
+		border-radius: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(5, 5, 9, 0.8);
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+
+	.eyebrow-card__label {
+		margin: 0;
+		font-weight: 600;
+		color: var(--color-fg);
+	}
+
+	.eyebrow-card__usage {
+		margin: 0;
+		color: var(--color-muted);
+		font-size: 0.95rem;
+	}
+
+	.eyebrow-note {
+		margin: 1rem 0 0;
+		color: var(--color-muted);
+		font-size: 0.95rem;
+	}
+
+	.utility-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: 1.25rem;
+	}
+
+	.utility-card {
+		padding: 1rem;
+		border-radius: 1.25rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(5, 5, 9, 0.75);
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.35);
+	}
+
+	.utility-card__preview {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 0.75rem;
+	}
+
+	.utility-card__preview--stacked {
+		min-height: 72px;
+	}
+
+	.utility-card__description {
+		margin: 0;
+		color: var(--color-muted);
+		font-size: 0.95rem;
+	}
+
+	.icon-button {
+		width: 54px;
+		height: 54px;
+		border-radius: 50%;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background:
+			radial-gradient(circle at 20% 20%, rgba(154, 26, 255, 0.28), transparent 45%),
+			radial-gradient(circle at 80% 20%, rgba(110, 110, 255, 0.2), transparent 50%);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-fg);
+		box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+		transition: transform 0.2s ease, border-color 0.2s ease;
+	}
+
+	.icon-button:hover {
+		border-color: var(--color-accent);
+		transform: translateY(-2px);
+	}
+
+	.icon-button svg {
+		width: 24px;
+		height: 24px;
+	}
+
+	.utility-hamburger {
+		width: 58px;
+		height: 58px;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: radial-gradient(circle at 30% 20%, rgba(154, 26, 255, 0.3), rgba(110, 110, 255, 0.18));
+		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+	}
+
+	.utility-hamburger__icon {
+		display: inline-flex;
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+
+	.utility-hamburger__icon span {
+		display: block;
+		width: 1.8rem;
+		height: 2px;
+		background: linear-gradient(120deg, #00ff7f, #6e6eff);
+		border-radius: 999px;
 	}
 
 	.avatar-panel {

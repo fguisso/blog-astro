@@ -9,10 +9,25 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { routes } from '../utils/routes';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & {
+	wordCount?: number;
+	readingTimeMinutes?: number;
+};
 
-const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro.props;
+const {
+	title,
+	description,
+	pubDate,
+	heroImage,
+	tags = [],
+	wordCount,
+	readingTimeMinutes,
+} = Astro.props as Props;
 const backToBlogHref = routes.blog();
+const hasReadingStats =
+	typeof wordCount === 'number' && typeof readingTimeMinutes === 'number';
+const formattedWordCount = hasReadingStats ? wordCount!.toLocaleString('pt-BR') : '';
+const formattedReadingTime = hasReadingStats ? `${readingTimeMinutes} min` : '';
 ---
 
 <html lang="en">
@@ -26,26 +41,45 @@ const backToBlogHref = routes.blog();
 				<article class="post-article" aria-labelledby="post-title">
 					<header class="post-header">
 						<p class="eyebrow">Artigo</p>
-						<div class="post-meta__timeline" aria-label="Linha do tempo do artigo">
-						<div>
-							<p class="post-meta__label">Publicado</p>
-							<p class="post-meta__value">
+					<h1 id="post-title">{title}</h1>
+					<p class="post-description text-muted">{description}</p>
+					<div class="post-meta__info" aria-label="Informações do artigo">
+						<span class="post-meta__entry">
+							<span class="post-meta__icon" aria-hidden="true">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+										<rect x="3" y="4" width="18" height="17" rx="3" />
+										<path d="M8 2v4m8-4v4" stroke-linecap="round" />
+										<path d="M3 10h18" />
+									</svg>
+								</span>
+							<span class="post-meta__text">
 								<FormattedDate date={pubDate} />
-							</p>
-						</div>
+							</span>
+						</span>
 						{
-							updatedDate && (
-								<div>
-									<p class="post-meta__label">Atualizado</p>
-									<p class="post-meta__value">
-										<FormattedDate date={updatedDate} />
-									</p>
-								</div>
+							hasReadingStats && (
+								<>
+									<span class="post-meta__entry">
+										<span class="post-meta__icon" aria-hidden="true">
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+												<path d="M6 7h12M6 12h12M6 17h7" stroke-linecap="round" />
+											</svg>
+										</span>
+										<span class="post-meta__text">{formattedWordCount} palavras</span>
+									</span>
+									<span class="post-meta__entry">
+										<span class="post-meta__icon" aria-hidden="true">
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+												<circle cx="12" cy="12" r="8.5" />
+												<path d="M12 8v4l2.25 1.5" stroke-linecap="round" stroke-linejoin="round" />
+											</svg>
+										</span>
+										<span class="post-meta__text">{formattedReadingTime}</span>
+									</span>
+								</>
 							)
 						}
 					</div>
-					<h1 id="post-title">{title}</h1>
-					<p class="post-description text-muted">{description}</p>
 					{
 						tags.length > 0 && (
 							<ul class="post-tags" aria-label="Tags do artigo">
@@ -129,31 +163,38 @@ const backToBlogHref = routes.blog();
 		line-height: 1.6;
 	}
 
-	.post-meta__timeline {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-		gap: 0.75rem;
-		margin: 0;
-		padding: 0;
-	}
-
-	.post-meta__timeline div {
+	.post-meta__info {
 		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.post-meta__label {
-		font-size: 0.75rem;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem 1.25rem;
+		font-size: 0.95rem;
 		color: var(--color-muted);
 	}
 
-	.post-meta__value {
-		margin: 0;
-		font-weight: 600;
+	.post-meta__entry {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.post-meta__text {
 		color: var(--color-fg);
+		font-weight: 500;
+	}
+
+	.post-meta__icon {
+		width: 1.1rem;
+		height: 1.1rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #00ff7f;
+	}
+
+	.post-meta__icon svg {
+		width: 100%;
+		height: 100%;
 	}
 
 	.post-tags {
