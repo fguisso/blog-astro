@@ -1,0 +1,60 @@
+---
+title: 'Proxmox e Homelab: Como Transformei um Mini PC em um Servidor de Respeito'
+description: 'Como transformei um mini PC em um servidor de homelab completo usando Proxmox.'
+pubDate: '2024-08-17'
+tags:
+  - Homelab
+  - Proxmox
+  - Debian
+  - AdGuard
+  - Tailscale
+---
+
+Recentemente apresentei no Debian Day Natal 2024 e compartilhei como transformei um mini PC comprado no AliExpress em um servidor de homelab completo. Usei o [Proxmox](https://www.proxmox.com/en/downloads), uma distribuição baseada em Debian, para orquestrar containers e VMs que sustentam tanto minha rotina pessoal quanto profissional. Se você curte software livre e quer explorar o mundo dos homelabs, este guia resume o que mostrei na palestra.
+
+### O que é Proxmox e por que usá-lo?
+
+O Proxmox é uma plataforma de virtualização que roda sobre Debian e permite criar containers LXC e máquinas virtuais com uma interface web bastante completa. A instalação é tranquila e a interface pode ser acessada até do celular, então administrar o seu laboratório não exige consoles cheios de cabos por perto.
+
+### Meu homelab e hardware utilizado
+
+Para o desafio usei um mini PC com a seguinte configuração:
+
+- **Processador:** AMD Ryzen 5 5600H
+- **Memória:** 16 GB RAM
+- **Armazenamento:** 500 GB SSD
+
+O modelo está disponível no [AliExpress](https://pt.aliexpress.com/item/1005003443853901.html?spm=a2g0o.order_list.order_list_main.187.4d3ecaa4Qh7Z9i&gatewayAdapt=glo2bra) e consegue rodar diversos serviços simultaneamente com folga. Quem quiser algo ainda mais compacto pode apostar em um Raspberry Pi com [Pimox](https://github.com/pimox/pimox7), que leva boa parte dos recursos do Proxmox para o hardware ARM.
+
+### Proxmox e Tailscale em ação
+
+Uso o Tailscale como VPN para acessar meu homelab de qualquer lugar. Durante a palestra mostrei o painel web do Proxmox diretamente do celular, gerenciando containers e VMs sem precisar expor portas para a internet pública.
+
+### Serviços que transformam o homelab
+
+#### 1. AdGuard
+
+O [AdGuard Home](https://tteck.github.io/Proxmox/#adguard-home-lxc) roda como bloqueador de anúncios e rastreadores para toda a rede. Também aproveito o recurso de _rewrite_ para criar domínios internos como `pve.pandora:8006` e `photoprism.pandora:80`, deixando tudo fácil de memorizar.
+
+#### 2. Paperless-ngx
+
+O [Paperlessngx](https://tteck.github.io/Proxmox/#paperless-ngx-lxc) recebe as notas fiscais e documentos que digitalizo. Ele indexa tudo e elimina pilhas de papel — basta fotografar ou enviar PDFs e acessar quando precisar.
+
+#### 3. Photoprism
+
+O [Photoprism](https://tteck.github.io/Proxmox/#photoprism-lxc) organiza todas as minhas fotos e vídeos. Mesmo num hardware mais enxuto, dá conta de identificar rostos e permitir buscas avançadas.
+
+#### 4. VSCode Web
+
+Com o [VSCode Web](https://tteck.github.io/Proxmox/#vs-code-server) posso programar remotamente usando um tablet ou celular. Além do editor, tenho acesso ao terminal do servidor para compilar e testar código sem precisar de um notebook principal.
+
+### Automatizando com tteck e expandindo o lab
+
+Fechei a apresentação mostrando a coleção de scripts do [tteck](https://tteck.github.io/Proxmox) que automatizam a criação de containers no Proxmox. Mesmo que eu não tenha demonstrado ao vivo, vale explorar outros serviços compatíveis:
+
+- [Nextcloud](https://tteck.github.io/Proxmox/#nextcloud-lxc) para sincronizar arquivos.
+- [Nginx Proxy Manager](https://tteck.github.io/Proxmox/#nginx-proxy-manager-lxc) como proxy reverso simples.
+- [Jellyfin](https://tteck.github.io/Proxmox/#jellyfin-media-server-lxc) para streaming de mídia.
+- [Vaultwarden](https://tteck.github.io/Proxmox/#vaultwarden-lxc) como cofre de senhas auto-hospedado.
+
+Esse setup prova que dá para construir um homelab robusto com pouco investimento. Com ferramentas certas e um pouco de curiosidade, você terá controle total sobre seus serviços e aprenderá bastante no processo.

@@ -17,6 +17,11 @@ const readingTimeMinutes = Math.max(1, Math.ceil(totalWords / 200));
 const { Content } = await render(post);
 ---
 
-<BlogPost {...post.data} wordCount={totalWords} readingTimeMinutes={readingTimeMinutes}>
+<BlogPost
+	{...post.data}
+	slug={post.slug ?? post.id}
+	wordCount={totalWords}
+	readingTimeMinutes={readingTimeMinutes}
+>
 	<Content />
 </BlogPost>

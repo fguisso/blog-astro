@@ -4,7 +4,9 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "dev:og": "node ./scripts/dev-og-server.mjs",
+    "generate:og": "node ./scripts/generate-og-images.mjs",
+    "build": "npm run generate:og && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -12,7 +14,10 @@
     "@astrojs/mdx": "^4.3.10",
     "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
+    "@resvg/resvg-js": "^2.6.2",
     "astro": "^5.15.4",
+    "devalue": "^5.5.0",
+    "satori": "^0.18.3",
     "sharp": "^0.34.3"
   }
 }

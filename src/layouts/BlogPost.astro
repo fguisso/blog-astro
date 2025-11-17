@@ -10,6 +10,7 @@ import Header from '../components/Header.astro';
 import { routes } from '../utils/routes';
 
 type Props = CollectionEntry<'blog'>['data'] & {
+	slug: string;
 	wordCount?: number;
 	readingTimeMinutes?: number;
 };
@@ -22,17 +23,20 @@ const {
 	tags = [],
 	wordCount,
 	readingTimeMinutes,
+	slug,
+	ogImage,
 } = Astro.props as Props;
 const backToBlogHref = routes.blog();
 const hasReadingStats =
 	typeof wordCount === 'number' && typeof readingTimeMinutes === 'number';
 const formattedWordCount = hasReadingStats ? wordCount!.toLocaleString('pt-BR') : '';
 const formattedReadingTime = hasReadingStats ? `${readingTimeMinutes} min` : '';
+const ogImagePath = ogImage ?? `/og/${slug}.png`;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={title} description={description} image={ogImagePath} />
 	</head>
 
 	<body>
