@@ -15,23 +15,14 @@ type Props = CollectionEntry<'blog'>['data'] & {
 	readingTimeMinutes?: number;
 };
 
-const {
-	title,
-	description,
-	pubDate,
-	heroImage,
-	tags = [],
-	wordCount,
-	readingTimeMinutes,
-	slug,
-	ogImage,
-} = Astro.props as Props;
+const { title, description, pubDate, heroImage, tags = [], wordCount, readingTimeMinutes, slug } =
+	Astro.props as Props;
 const backToBlogHref = routes.blog();
 const hasReadingStats =
 	typeof wordCount === 'number' && typeof readingTimeMinutes === 'number';
 const formattedWordCount = hasReadingStats ? wordCount!.toLocaleString('pt-BR') : '';
 const formattedReadingTime = hasReadingStats ? `${readingTimeMinutes} min` : '';
-const ogImagePath = ogImage ?? `/og/${slug}.png`;
+const ogImagePath = `/og/${slug}.png`;
 ---
 
 <html lang="en">

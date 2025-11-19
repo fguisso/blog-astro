@@ -524,6 +524,13 @@ const samplePostHref = routes.blogPost('exemplo');
 						Para microsites mantemos variações tipográficas: <strong>gwiki</strong> (wiki.guisso.dev), <strong>gtuner</strong> (guisso.dev/gtuner) e o
 						monograma <strong>G</strong> para ícones compactos.
 					</p>
+					<div class="logo-assets">
+						<div class="logo-downloads">
+							<GlowButton href="/logo-wordmark.png" variant="accent" size="sm">PNG fundo escuro</GlowButton>
+							<GlowButton href="/logo-wordmark-dark.png" variant="ghost" size="sm">PNG fundo claro</GlowButton>
+						</div>
+						<p class="logo-assets__note">Arquivos em 900px, fundo transparente, exportados direto do LogoWordmark oficial.</p>
+					</div>
 				</div>
 				<div class="logo-grid">
 					<div class="logo-swatch logo-swatch--dark">
@@ -1092,6 +1099,22 @@ const samplePostHref = routes.blogPost('exemplo');
 	.logo-note {
 		margin: 0.4rem 0 0;
 		color: var(--color-muted);
+	}
+
+	.logo-assets {
+		margin-top: 1rem;
+	}
+
+	.logo-downloads {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.logo-assets__note {
+		margin: 0.4rem 0 0;
+		color: var(--color-muted);
+		font-size: 0.95rem;
 	}
 
 	.logo-mark-grid {

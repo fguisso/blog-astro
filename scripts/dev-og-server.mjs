@@ -5,6 +5,7 @@ import {
 	loadAvatarDataUrl,
 	loadFonts,
 	loadPostsFromContentStore,
+	loadWordmarkDataUrl,
 	log,
 	readSiteMeta,
 	renderOgImageBuffer,
@@ -18,14 +19,22 @@ let fonts = await loadFonts();
 let siteMeta = await readSiteMeta();
 let posts = await loadPostsFromContentStore();
 let avatarSrc = await loadAvatarDataUrl();
+let logoWordmarkSrc = await loadWordmarkDataUrl();
 
 function refreshData() {
-	return Promise.all([loadFonts(), readSiteMeta(), loadPostsFromContentStore(), loadAvatarDataUrl()]).then(
-		([loadedFonts, meta, loadedPosts, avatar]) => {
+	return Promise.all([
+		loadFonts(),
+		readSiteMeta(),
+		loadPostsFromContentStore(),
+		loadAvatarDataUrl(),
+		loadWordmarkDataUrl(),
+	]).then(
+		([loadedFonts, meta, loadedPosts, avatar, wordmark]) => {
 			fonts = loadedFonts;
 			siteMeta = meta;
 			posts = loadedPosts;
 			avatarSrc = avatar;
+			logoWordmarkSrc = wordmark;
 		},
 	);
 }
@@ -60,7 +69,7 @@ const server = http.createServer(async (req, res) => {
 			return;
 		}
 		try {
-			const png = await renderOgImageBuffer(post, fonts, siteMeta, { avatarSrc });
+			const png = await renderOgImageBuffer(post, fonts, siteMeta, { avatarSrc, logoWordmarkSrc });
 			res.writeHead(200, {
 				'Content-Type': 'image/png',
 				'Cache-Control': 'no-store',

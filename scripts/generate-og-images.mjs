@@ -4,6 +4,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import {
 	cleanOgOutputFolder,
 	loadAvatarDataUrl,
+	loadWordmarkDataUrl,
 	loadFonts,
 	loadPostsFromContentStore,
 	log,
@@ -21,33 +22,24 @@ async function ensureOutputDir() {
 async function main() {
 	try {
 		await runAstroSync();
-		const [fonts, siteMeta, posts, avatarSrc] = await Promise.all([
+		const [fonts, siteMeta, posts, avatarSrc, logoWordmarkSrc] = await Promise.all([
 			loadFonts(),
 			readSiteMeta(),
 			loadPostsFromContentStore(),
 			loadAvatarDataUrl(),
+			loadWordmarkDataUrl(),
 		]);
 		if (posts.length === 0) {
 			log('No blog posts found. Skipping OG generation.');
 			return;
 		}
-		const pendingPosts = posts.filter((post) => !post.ogImage);
-		const skipped = posts.length - pendingPosts.length;
 		await ensureOutputDir();
-		if (pendingPosts.length === 0) {
-			log(
-				skipped > 0
-					? 'All posts define custom ogImage. Nothing to render.'
-					: 'No posts found that require OG generation.',
-			);
-			return;
-		}
-		await cleanOgOutputFolder(pendingPosts.map((post) => post.slug));
+		await cleanOgOutputFolder(posts.map((post) => post.slug));
 		let successCount = 0;
 		const failures = [];
-		for (const post of pendingPosts) {
+		for (const post of posts) {
 			try {
-				const png = await renderOgImageBuffer(post, fonts, siteMeta, { avatarSrc });
+				const png = await renderOgImageBuffer(post, fonts, siteMeta, { avatarSrc, logoWordmarkSrc });
 				const outputPath = path.join(ogOutputDir, `${post.slug}.png`);
 				await writeFile(outputPath, png);
 				successCount += 1;
@@ -57,9 +49,6 @@ async function main() {
 				failures.push({ slug: post.slug, message });
 				log(`Failed to render ${post.slug}: ${message}`);
 			}
-		}
-		if (skipped > 0) {
-			log(`Skipped ${skipped} post(s) with custom ogImage entries.`);
 		}
 		if (failures.length > 0) {
 			log(

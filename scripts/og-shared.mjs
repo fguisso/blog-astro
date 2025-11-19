@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 import { readFile, readdir, rm, mkdir } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
-import { parse } from 'devalue';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import sharp from 'sharp';
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const projectRoot = path.resolve(__dirname, '..');
-export const dataStorePath = path.join(projectRoot, '.astro', 'data-store.json');
 export const ogOutputDir = path.join(projectRoot, 'public', 'og');
 const themeConfigPath = path.join(projectRoot, 'src', 'theme.config.ts');
 const FONTS_DIR = path.join(projectRoot, 'src', 'assets', 'fonts');
 const SPACE_GROTESK_PATH = path.join(FONTS_DIR, 'SpaceGrotesk-Bold.ttf');
 const AVATAR_PATH = path.join(projectRoot, 'src', 'assets', 'guisso-avatar.jpg');
+const WORDMARK_PATH = path.join(projectRoot, 'public', 'logo-wordmark.png');
+const BLOG_CONTENT_DIR = path.join(projectRoot, 'src', 'content', 'blog');
+const CONTENT_FILE_EXTENSIONS = new Set(['.md', '.mdx']);
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
 const RENDER_SCALE = 2;
@@ -82,27 +82,133 @@ export async function loadFonts() {
 }
 
 export async function loadPostsFromContentStore() {
-	if (!existsSync(dataStorePath)) {
-		throw new Error('Content data store not found. Run `astro sync` first.');
-	}
-	const raw = await readFile(dataStorePath, 'utf-8');
-	const store = parse(raw);
-	const blogEntries = store.get('blog');
-	if (!blogEntries) {
+	const files = await collectContentEntryFiles(BLOG_CONTENT_DIR);
+	if (files.length === 0) {
 		return [];
 	}
 	const posts = [];
-	for (const entry of blogEntries.values()) {
-		const slug = entry.slug ?? entry.id;
+	for (const filePath of files) {
+		const raw = await readFile(filePath, 'utf-8');
+		const frontmatter = extractFrontmatter(raw);
+		const slug = path
+			.relative(BLOG_CONTENT_DIR, filePath)
+			.replace(/\\/g, '/')
+			.replace(/\.(md|mdx)$/i, '');
 		posts.push({
 			slug,
-			title: entry?.data?.title ?? slug,
-			description: entry?.data?.description ?? '',
-			tags: Array.isArray(entry?.data?.tags) ? entry.data.tags : [],
-			ogImage: typeof entry?.data?.ogImage === 'string' ? entry.data.ogImage : undefined,
+			title:
+				typeof frontmatter.title === 'string' && frontmatter.title.trim().length > 0
+					? frontmatter.title.trim()
+					: slug,
+			description: typeof frontmatter.description === 'string' ? frontmatter.description : '',
+			tags: normalizeTagList(frontmatter.tags),
 		});
 	}
 	return posts;
+}
+
+async function collectContentEntryFiles(dir) {
+	const entries = await readdir(dir, { withFileTypes: true });
+	const files = [];
+	for (const entry of entries) {
+		const entryPath = path.join(dir, entry.name);
+		if (entry.isDirectory()) {
+			files.push(...(await collectContentEntryFiles(entryPath)));
+		} else if (entry.isFile() && CONTENT_FILE_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) {
+			files.push(entryPath);
+		}
+	}
+	return files.sort((a, b) => a.localeCompare(b));
+}
+
+function extractFrontmatter(raw) {
+	if (typeof raw !== 'string' || !raw.startsWith('---')) {
+		return {};
+	}
+	const match = raw.match(/^---\s*[\r\n]+([\s\S]*?)\r?\n---/);
+	if (!match) {
+		return {};
+	}
+	return parseFrontmatterBlock(match[1]);
+}
+
+function parseFrontmatterBlock(block) {
+	const data = {};
+	const lines = block.split(/\r?\n/);
+	let currentKey = null;
+	for (const rawLine of lines) {
+		const line = rawLine.trimEnd();
+		if (line.trim().length === 0) {
+			continue;
+		}
+		const arrayMatch = line.trim().match(/^-\s+(.*)$/);
+		if (arrayMatch && currentKey && Array.isArray(data[currentKey])) {
+			const value = parseScalarValue(arrayMatch[1]);
+			if (value) {
+				data[currentKey].push(value);
+			}
+			continue;
+		}
+		const normalized = line.trim();
+		const keyMatch = normalized.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
+		if (!keyMatch) {
+			continue;
+		}
+		const [, key, rest] = keyMatch;
+		if (!rest || rest.length === 0) {
+			data[key] = [];
+			currentKey = key;
+		} else {
+			const value = parseFrontmatterValue(rest);
+			data[key] = value;
+			currentKey = key;
+		}
+	}
+	return data;
+}
+
+function parseFrontmatterValue(value) {
+	const trimmed = value.trim();
+	if (!trimmed) {
+		return '';
+	}
+	if (trimmed === '[]') {
+		return [];
+	}
+	if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+		const inner = trimmed.slice(1, -1).trim();
+		if (!inner) {
+			return [];
+		}
+		return inner
+			.split(',')
+			.map((segment) => parseScalarValue(segment))
+			.filter((segment) => segment.length > 0);
+	}
+	return parseScalarValue(trimmed);
+}
+
+function parseScalarValue(value) {
+	const trimmed = value.trim();
+	if (!trimmed) {
+		return '';
+	}
+	const hasMatchingQuotes =
+		(trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+		(trimmed.startsWith("'") && trimmed.endsWith("'"));
+	return hasMatchingQuotes ? trimmed.slice(1, -1) : trimmed;
+}
+
+function normalizeTagList(value) {
+	if (Array.isArray(value)) {
+		return value
+			.map((entry) => (typeof entry === 'string' ? entry.trim() : ''))
+			.filter((entry) => entry.length > 0);
+	}
+	if (typeof value === 'string' && value.trim().length > 0) {
+		return [value.trim()];
+	}
+	return [];
 }
 
 export async function loadAvatarDataUrl() {
@@ -111,6 +217,15 @@ export async function loadAvatarDataUrl() {
 		const ext = path.extname(AVATAR_PATH).slice(1).toLowerCase() || 'jpeg';
 		const mime = ext === 'jpg' ? 'jpeg' : ext;
 		return `data:image/${mime};base64,${buffer.toString('base64')}`;
+	} catch {
+		return null;
+	}
+}
+
+export async function loadWordmarkDataUrl() {
+	try {
+		const buffer = await readFile(WORDMARK_PATH);
+		return `data:image/png;base64,${buffer.toString('base64')}`;
 	} catch {
 		return null;
 	}
@@ -137,7 +252,7 @@ export function truncate(text, maxLength) {
 	return text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text;
 }
 
-export function createCardTree({ title, description, tags, siteTitle, siteUrl, avatarSrc }) {
+export function createCardTree({ title, description, tags, siteTitle, siteUrl, avatarSrc, logoWordmarkSrc }) {
 	const accentGradient = 'linear-gradient(120deg, #00FF7F 0%, #9A1AFF 55%, #6E6EFF 100%)';
 	const safeSiteTitle =
 		typeof siteTitle === 'string' && siteTitle.trim().length > 0 ? siteTitle : 'Astro Blog';
@@ -203,6 +318,81 @@ export function createCardTree({ title, description, tags, siteTitle, siteUrl, a
 				},
 			};
 
+	const logoChildren = logoWordmarkSrc
+		? [
+					{
+						type: 'img',
+						props: {
+							src: logoWordmarkSrc,
+							width: 130,
+							height: 50,
+							style: {
+								width: '130px',
+								height: '50px',
+								objectFit: 'contain',
+								objectPosition: 'left center',
+							},
+						},
+					},
+			]
+		: [
+				{
+					type: 'div',
+					props: {
+						style: {
+							display: 'flex',
+							alignItems: 'center',
+						},
+						children: [
+							{
+								type: 'div',
+								props: {
+									style: {
+										width: '56px',
+										height: '56px',
+										borderRadius: '16px',
+										background: accentGradient,
+									},
+								},
+							},
+							{
+								type: 'div',
+								props: {
+									style: {
+										marginLeft: '18px',
+										display: 'flex',
+										flexDirection: 'column',
+									},
+									children: [
+										{
+											type: 'span',
+											props: {
+												style: {
+													fontSize: '18px',
+													letterSpacing: '0.4em',
+													color: '#A8A9BB',
+												},
+												children: ['BLOG'],
+											},
+										},
+										{
+											type: 'span',
+											props: {
+												style: {
+													fontFamily: 'Oferta do Dia',
+													fontSize: '40px',
+												},
+												children: [safeSiteTitle],
+											},
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+			];
+
 	const bodyChildren = [
 		{
 			type: 'h1',
@@ -266,6 +456,7 @@ export function createCardTree({ title, description, tags, siteTitle, siteUrl, a
 				color: '#F5F5FF',
 				fontFamily: 'Inter',
 				justifyContent: 'space-between',
+				position: 'relative',
 			},
 			children: [
 				{
@@ -277,63 +468,7 @@ export function createCardTree({ title, description, tags, siteTitle, siteUrl, a
 							justifyContent: 'space-between',
 							marginBottom: '32px',
 						},
-						children: [
-							{
-								type: 'div',
-								props: {
-									style: {
-										display: 'flex',
-										alignItems: 'center',
-									},
-									children: [
-										{
-											type: 'div',
-											props: {
-												style: {
-													width: '56px',
-													height: '56px',
-													borderRadius: '16px',
-													background: accentGradient,
-												},
-											},
-										},
-										{
-											type: 'div',
-											props: {
-												style: {
-													marginLeft: '18px',
-													display: 'flex',
-													flexDirection: 'column',
-												},
-												children: [
-													{
-														type: 'span',
-														props: {
-															style: {
-																fontSize: '18px',
-																letterSpacing: '0.4em',
-																color: '#A8A9BB',
-															},
-															children: ['BLOG'],
-														},
-													},
-													{
-														type: 'span',
-														props: {
-															style: {
-																fontFamily: 'Oferta do Dia',
-																fontSize: '40px',
-															},
-															children: [safeSiteTitle],
-														},
-													},
-												],
-											},
-										},
-									],
-								},
-							},
-						],
+							children: logoChildren,
 					},
 				},
 				{
@@ -448,6 +583,7 @@ export async function renderOgImageBuffer(post, fonts, siteMeta, assets) {
 		siteTitle: siteMeta.title,
 		siteUrl: siteMeta.url,
 		avatarSrc: assets?.avatarSrc ?? null,
+		logoWordmarkSrc: assets?.logoWordmarkSrc ?? null,
 	});
 	const svg = await satori(tree, {
 		width: OG_WIDTH,
