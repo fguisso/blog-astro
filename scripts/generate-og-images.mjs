@@ -34,13 +34,15 @@ async function main() {
 			return;
 		}
 		await ensureOutputDir();
-		await cleanOgOutputFolder(posts.map((post) => post.slug));
+		await cleanOgOutputFolder();
 		let successCount = 0;
 		const failures = [];
 		for (const post of posts) {
 			try {
 				const png = await renderOgImageBuffer(post, fonts, siteMeta, { avatarSrc, logoWordmarkSrc });
-				const outputPath = path.join(ogOutputDir, `${post.slug}.png`);
+				const localeDir = path.join(ogOutputDir, post.lang ?? 'pt');
+				await mkdir(localeDir, { recursive: true });
+				const outputPath = path.join(localeDir, `${post.slug}.png`);
 				await writeFile(outputPath, png);
 				successCount += 1;
 				log(`Created ${path.relative(projectRoot, outputPath)}`);

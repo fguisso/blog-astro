@@ -29,6 +29,13 @@ export default defineConfig({
 	site: siteOrigin,
 	base: normalizedBase,
 	integrations: [mdx(), sitemap()],
+	i18n: {
+		defaultLocale: 'pt',
+		locales: ['pt', 'en'],
+		routing: {
+			prefixDefaultLocale: false,
+		},
+	},
 });
 
 export { themeConfig };

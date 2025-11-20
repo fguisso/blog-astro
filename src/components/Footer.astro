@@ -1,15 +1,24 @@
 ---
 import GlowButton from './GlowButton.astro';
 import LogoWordmark from './LogoWordmark.astro';
+import { t } from '../i18n';
+import { getRequestLocale, type LocaleCode } from '../i18n/config';
 import { routes } from '../utils/routes';
 
+interface Props {
+	locale?: LocaleCode;
+}
+
+const { locale: forcedLocale } = Astro.props as Props;
+const locale = forcedLocale ?? getRequestLocale(Astro);
+
 const today = new Date();
-const rssHref = routes.rss();
+const rssHref = routes.rss(locale);
 const navLinks = [
-	{ href: routes.home(), label: 'Home' },
-	{ href: routes.blog(), label: 'Blog' },
-	{ href: routes.about(), label: 'About' },
-	{ href: routes.styleGuide(), label: 'Style Guide' },
+	{ href: routes.home(locale), label: t(locale, 'nav.home') },
+	{ href: routes.blog(locale), label: t(locale, 'nav.blog') },
+	{ href: routes.about(locale), label: t(locale, 'nav.about') },
+	{ href: routes.styleGuide(locale), label: t(locale, 'nav.styleGuide') },
 ];
 ---
 
@@ -17,15 +26,14 @@ const navLinks = [
 	<div class="page-shell footer-grid">
 		<div class="footer-brand">
 			<LogoWordmark />
-			<p>
-				Explorações visuais, notas sobre front-end e experimentos com brilho neon — sempre inspirados
-				no style guide.
-			</p>
-			<GlowButton href={rssHref} variant="ghost" size="sm">Assinar RSS</GlowButton>
+			<p>{t(locale, 'footer.description')}</p>
+			<GlowButton href={rssHref} variant="ghost" size="sm">
+				{t(locale, 'footer.rssCta')}
+			</GlowButton>
 		</div>
 
 		<div>
-			<p class="eyebrow">Navegação</p>
+			<p class="eyebrow">{t(locale, 'footer.navLabel')}</p>
 			<ul class="footer-links">
 				{navLinks.map((link) => (
 					<li>
@@ -36,7 +44,7 @@ const navLinks = [
 		</div>
 
 		<div>
-			<p class="eyebrow">Conecte-se</p>
+			<p class="eyebrow">{t(locale, 'footer.connectLabel')}</p>
 			<div class="social-links">
 				<a href="https://github.com/withastro/astro" target="_blank" rel="noreferrer">
 					<span class="sr-only">GitHub</span>
@@ -70,7 +78,7 @@ const navLinks = [
 	</div>
 	<div class="footer-bottom">
 		<div class="page-shell">
-			<p>&copy; {today.getFullYear()} - Feito com Astro e o style guide neon da Guisso.</p>
+			<p>&copy; {today.getFullYear()} - {t(locale, 'footer.rights')}</p>
 		</div>
 	</div>
 </footer>

@@ -1,103 +1,103 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import GlowBox from '../components/GlowBox.astro';
-import GlowButton from '../components/GlowButton.astro';
-import Header from '../components/Header.astro';
-import Callout from '../components/Callout.astro';
-import FeaturedProjectCard from '../components/FeaturedProjectCard.astro';
-import TalkAvatarBadge from '../components/TalkAvatarBadge.astro';
-import LogoWordmark from '../components/LogoWordmark.astro';
-import PostCard from '../components/PostCard.astro';
-import Chip from '../components/Chip.astro';
-import { getHtmlLang, getRequestLocale } from '../i18n/config';
-import { themeConfig } from '../theme.config';
-import { routes } from '../utils/routes';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import GlowBox from '../../components/GlowBox.astro';
+import GlowButton from '../../components/GlowButton.astro';
+import Header from '../../components/Header.astro';
+import Callout from '../../components/Callout.astro';
+import FeaturedProjectCard from '../../components/FeaturedProjectCard.astro';
+import TalkAvatarBadge from '../../components/TalkAvatarBadge.astro';
+import LogoWordmark from '../../components/LogoWordmark.astro';
+import PostCard from '../../components/PostCard.astro';
+import Chip from '../../components/Chip.astro';
+import { getHtmlLang, type LocaleCode } from '../../i18n/config';
+import { themeConfig } from '../../theme.config';
+import { routes } from '../../utils/routes';
 
 const palette = [
-	{ name: 'Fundo base', token: '--color-bg', value: '#020204' },
-	{ name: 'Painel', token: '--color-panel', value: '#131318' },
-	{ name: 'Primário', token: '--color-fg', value: '#F5F5FF' },
-	{ name: 'Texto secundário', token: '--color-muted', value: '#A8A9BB' },
-	{ name: 'Neon verde', token: '--color-accent', value: '#00FF7F' },
-	{ name: 'Neon roxo', token: '--color-secondary', value: '#9A1AFF' },
-	{ name: 'Neon azul', token: '--color-highlight', value: '#6E6EFF' },
+	{ name: 'Base background', token: '--color-bg', value: '#020204' },
+	{ name: 'Panel', token: '--color-panel', value: '#131318' },
+	{ name: 'Primary text', token: '--color-fg', value: '#F5F5FF' },
+	{ name: 'Muted text', token: '--color-muted', value: '#A8A9BB' },
+	{ name: 'Neon green', token: '--color-accent', value: '#00FF7F' },
+	{ name: 'Neon purple', token: '--color-secondary', value: '#9A1AFF' },
+	{ name: 'Neon blue', token: '--color-highlight', value: '#6E6EFF' },
 ];
 
 const typography = [
 	{
 		label: 'Hero / H1',
 		stack: 'Space Grotesk Bold · clamp(48px, 6vw, 72px)',
-		description: 'H1 e heros. Usa gradientes apenas se aplicar span.primary dentro do texto.',
+		description: 'H1s and hero titles. Only use gradients when wrapping text in span.primary.',
 	},
 	{
-		label: 'Seções / H2–H3',
+		label: 'Sections / H2–H3',
 		stack: 'Space Grotesk SemiBold · 32–40px',
-		description: 'Títulos internos e seções. Sempre em Space Grotesk para manter o ritmo.',
+		description: 'Section headings. Keep them in Space Grotesk to preserve rhythm.',
 	},
 	{
 		label: 'Body',
 		stack: 'Inter Regular · 18px · line-height 1.7',
-		description: 'Parágrafos, descrições e notas de cards.',
+		description: 'Paragraphs, descriptions, and card notes.',
 	},
 	{
 		label: 'Highlight span',
 		stack: 'Oferta do Dia + span.primary',
-		description: 'Apenas para trechos curtos (badges, palavras-chave, CTA dentro do texto).',
+		description: 'Only for short snippets like badges, keywords, or inline CTAs.',
 	},
 ];
 
 const buttonVariants = [
-	{ variant: 'primary', label: 'Primary', usage: 'Link discreto dentro de cards e textos.' },
-	{ variant: 'accent', label: 'Accent', usage: 'Principal CTA neon para páginas e formulários.' },
-	{ variant: 'secondary', label: 'Secondary', usage: 'Links de apoio, sem roubar atenção.' },
-	{ variant: 'outline', label: 'Outline', usage: 'CTA com fundo transparente em áreas escuras.' },
-	{ variant: 'ghost', label: 'Ghost', usage: 'Botões utilitários, como filtros e anchors.' },
+	{ variant: 'primary', label: 'Primary', usage: 'Subtle inline link for cards and paragraphs.' },
+	{ variant: 'accent', label: 'Accent', usage: 'Main neon CTA for pages and forms.' },
+	{ variant: 'secondary', label: 'Secondary', usage: 'Support links that shouldn’t steal focus.' },
+	{ variant: 'outline', label: 'Outline', usage: 'CTA with transparent background on dark areas.' },
+	{ variant: 'ghost', label: 'Ghost', usage: 'Utility buttons such as filters and anchors.' },
  ] as const;
 
 const gradientSwatches = [
 	{
 		label: 'Glow mesh',
 		token: '--glow-gradient',
-		description: 'Plano de fundo global. Mistura verde, roxo e azul em radial blur.',
+		description: 'Global background. Blends green, purple, and blue in a radial blur.',
 		variant: 'mesh',
 	},
 	{
 		label: 'Primary beam',
 		token: 'span.primary',
-		description: 'Texto com gradiente padrão para headlines e destaques.',
+		description: 'Default gradient text for headlines and highlights.',
 		variant: 'beam',
 	},
 	{
 		label: 'Neon shield',
 		token: 'GlowBox::before',
-		description: 'Borda iluminada dos componentes estruturais.',
+		description: 'Glowing borders used by structural components.',
 		variant: 'shield',
 	},
 ];
 
 const postSamples = [
 	{
-		title: 'Guardrails neon para o pipeline de AppSec',
-		description: 'Como integrei scanners, alerts e feature flags em um único fluxo sem travar deploys.',
-		dateLabel: '24 jun 2024',
-		stats: '1.1k palavras · 6 min',
+		title: 'Neon guardrails for the AppSec pipeline',
+		description: 'How I wired scanners, alerts, and feature flags into a single flow without blocking deploys.',
+		dateLabel: '24 Jun 2024',
+		stats: '1.1k words · 6 min',
 		tag: 'AppSec',
 		image: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1400&q=80',
 	},
 	{
-		title: 'Home lab como staging de autenticação',
-		description: 'Orquestração de VMs e tunéis WireGuard para validar fluxos sem depender do ambiente oficial.',
-		dateLabel: '18 mai 2024',
-		stats: '980 palavras · 5 min',
+		title: 'Home lab as authentication staging',
+		description: 'VM orchestration plus WireGuard tunnels to validate flows without touching the official environment.',
+		dateLabel: '18 May 2024',
+		stats: '980 words · 5 min',
 		tag: 'Home-lab',
 		image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=80',
 	},
 	{
-		title: 'Design tokens de neon para Figma e código',
-		description: 'Documentei como manter as mesmas cores e espaçamentos em todas as superfícies.',
-		dateLabel: '09 abr 2024',
-		stats: '760 palavras · 4 min',
+		title: 'Neon design tokens for Figma and code',
+		description: 'Documented how to keep colors and spacing aligned across every surface.',
+		dateLabel: '09 Apr 2024',
+		stats: '760 words · 4 min',
 		tag: 'Design',
 		image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=80',
 	},
@@ -106,18 +106,18 @@ const postSamples = [
 const eyebrowSamples = [
 	{
 		text: 'style guide',
-		label: 'Hero / Contexto',
-		usage: 'Acima de H1 para indicar o tipo de página ou seção principal.',
+		label: 'Hero / Context',
+		usage: 'Sits above H1 to identify the page or primary section.',
 	},
 	{
-		text: 'componentes',
-		label: 'Seções internas',
-		usage: 'Divide blocos extensos e ajuda a criar ritmo em páginas longas.',
+		text: 'components',
+		label: 'Inner sections',
+		usage: 'Splits long blocks and builds rhythm on long pages.',
 	},
 	{
-		text: 'insight rápido',
-		label: 'Cards e meta',
-		usage: 'Em cards, callouts e post meta para reforçar o assunto.',
+		text: 'quick insight',
+		label: 'Cards and meta',
+		usage: 'Use in cards, callouts, and post metadata to reinforce the topic.',
 	},
 ];
 
@@ -142,12 +142,14 @@ const logoMarks = [
 	},
 ];
 
-const locale = getRequestLocale(Astro);
+const locale: LocaleCode = 'en';
 const htmlLang = getHtmlLang(locale);
 const currentPath = Astro.url?.pathname ?? '/';
 const currentSearch = Astro.url?.search ?? '';
-const { site, featuredProjects } = themeConfig;
-const projectSamples = featuredProjects.slice(0, 2);
+const { site, featuredProjects, featuredProjectsEn } = themeConfig;
+const localizedFeaturedProjects =
+	featuredProjectsEn && featuredProjectsEn.length > 0 ? featuredProjectsEn : featuredProjects;
+const projectSamples = localizedFeaturedProjects.slice(0, 2);
 const projectsHref = routes.projects(locale);
 const samplePostHref = routes.blogPost('exemplo', locale);
 ---
@@ -155,7 +157,7 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 <!doctype html>
 <html lang={htmlLang}>
 	<head>
-		<BaseHead title={`Style Guide · ${site.title}`} description="Referência visual com os componentes neon usados no blog." />
+		<BaseHead title={`Style Guide · ${site.title}`} description="Visual reference with every neon component used across the blog." />
 	</head>
 	<body>
 		<Header locale={locale} pathname={currentPath} search={currentSearch} />
@@ -163,28 +165,26 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 				<section class="style-guide__hero">
 					<p class="eyebrow">style guide</p>
 					<h1 class="display-headline">
-						<span class="display-special primary">Todos os</span>
-						<span>blocos prontos do kit neon</span>
+						<span class="display-special primary">Every single</span>
+						<span>ready-made block from the neon kit</span>
 					</h1>
 					<p>
-						Esta página concentra os componentes reais do blog para facilitar revisões, QA e criação de novos layouts.
-						Tudo aqui reutiliza o mesmo tema escuro com gradientes neon, sem importar libs externas.
+						This page gathers the real components from the blog so reviews, QA, and new layouts stay in sync. Everything here reuses the same dark theme with neon gradients—no external UI libraries needed.
 					</p>
 					<p class="style-guide__hero-note">
-						Precisa criar uma nova seção ou componente? Duplique o bloco correspondente daqui, ajuste o conteúdo e mantenha os mesmos tokens.
-						Quando precisar da antiga fonte Oferta do Dia, use <code>&lt;span class="display-special primary"&gt;</code> para aplicar o gradiente padrão.
+						Need a new section or component? Duplicate the matching block from this guide, edit the content, and keep the same design tokens. Whenever you want the old Oferta do Dia font, wrap the text in <code>&lt;span class="display-special primary"&gt;</code> to apply the default gradient.
 					</p>
 				<div class="style-guide__hero-cta">
-					<GlowButton href="#componentes" variant="accent" size="lg">Ver componentes</GlowButton>
-					<GlowButton href={projectsHref} variant="ghost" size="lg">Projetos que usam o kit</GlowButton>
+					<GlowButton href="#componentes" variant="accent" size="lg">See components</GlowButton>
+					<GlowButton href={projectsHref} variant="ghost" size="lg">Projects using the kit</GlowButton>
 				</div>
 			</section>
 
 			<section class="style-guide__section" id="cores">
 				<div class="style-guide__section-head">
-					<p class="eyebrow">cores</p>
-					<h2>Paleta oficial e tokens</h2>
-					<p>Use sempre os tokens abaixo. Eles já possuem contraste ideal para o fundo escuro e respondem ao mesmo gradiente neon.</p>
+					<p class="eyebrow">colors</p>
+					<h2>Official palette and tokens</h2>
+					<p>Always rely on these tokens. They already have the right contrast for the dark background and follow the same neon gradients.</p>
 				</div>
 				<GlowBox accent="highlight" class="style-guide__panel">
 					<ul class="palette-grid">
@@ -202,11 +202,10 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 
 			<section class="style-guide__section" id="gradientes">
 				<div class="style-guide__section-head">
-					<p class="eyebrow">gradientes</p>
-					<h2>Como o brilho é aplicado</h2>
+					<p class="eyebrow">gradients</p>
+					<h2>How the glow is applied</h2>
 					<p>
-						Os três gradientes principais mantêm o neon consistente em fundos, textos e contornos. Combine-os com <code>span.primary</code> para
-						aplicar o mesmo feixe usado na home.
+						These three gradients keep the neon language consistent across backgrounds, text, and borders. Combine them with <code>span.primary</code> to fire the same beam used on the homepage.
 					</p>
 				</div>
 				<GlowBox accent="accent" class="style-guide__panel gradient-panel">
@@ -227,9 +226,9 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 
 			<section class="style-guide__section" id="tipografia">
 				<div class="style-guide__section-head">
-					<p class="eyebrow">tipografia</p>
-					<h2>Escala tipográfica</h2>
-					<p>Space Grotesk passou a liderar os títulos, Inter segura os textos e Oferta do Dia fica reservada a spans especiais.</p>
+					<p class="eyebrow">typography</p>
+					<h2>Type scale</h2>
+					<p>Space Grotesk leads the headings, Inter handles body copy, and Oferta do Dia is reserved for special spans.</p>
 				</div>
 				<GlowBox accent="secondary" padding="relaxed" class="style-guide__panel">
 					<div class="type-grid">
@@ -258,8 +257,7 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 					<div>
 						<p class="eyebrow">Paragraph</p>
 						<p>
-							Esta é a base: Inter 18px, line-height 1.7. Use <span class="display-special primary">span.primary</span> para o
-							highlight com Oferta do Dia quando precisar de contraste.
+							This is the base: Inter 18px, line-height 1.7. Use <span class="display-special primary">span.primary</span> for Oferta do Dia highlights when you need extra contrast.
 						</p>
 					</div>
 				</GlowBox>
@@ -268,8 +266,8 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 			<section class="style-guide__section" id="eyebrows">
 				<div class="style-guide__section-head">
 					<p class="eyebrow">micro labels</p>
-					<h2>Eyebrows oficiais</h2>
-					<p>Labels em caixa baixa com tracking amplo reforçam a narrativa neon e antecedem qualquer heading.</p>
+					<h2>Approved eyebrows</h2>
+					<p>Lowercase labels with generous tracking keep the neon narrative consistent and precede every heading.</p>
 				</div>
 				<GlowBox accent="secondary" class="style-guide__panel">
 					<div class="eyebrow-grid">
@@ -282,16 +280,16 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 						))}
 					</div>
 					<p class="eyebrow-note">
-						Sempre use a classe <code>.eyebrow</code>: fonte Inter uppercase, tracking generoso e cor <code>var(--color-muted)</code>. Nunca troque por bold.
+						Always use the <code>.eyebrow</code> class: Inter uppercase, generous tracking, and <code>var(--color-muted)</code>. Never swap it for bold text.
 					</p>
 				</GlowBox>
 			</section>
 
 			<section class="style-guide__section" id="componentes">
 				<div class="style-guide__section-head">
-					<p class="eyebrow">componentes</p>
-					<h2>Botões e estados</h2>
-					<p>GlowButton cobre o espectro inteiro de CTAs. Combine variantes e tamanhos para qualquer cenário.</p>
+					<p class="eyebrow">components</p>
+					<h2>Buttons and states</h2>
+					<p>GlowButton spans the entire CTA range. Combine variants and sizes to match any context.</p>
 				</div>
 				<GlowBox accent="accent" class="style-guide__panel">
 					<div class="button-grid">
@@ -303,9 +301,9 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 						))}
 					</div>
 					<div class="button-grid button-grid--sizes">
-						<GlowButton size="sm" variant="ghost">Compacto</GlowButton>
-						<GlowButton size="md" variant="primary">Padrão</GlowButton>
-						<GlowButton size="lg" variant="accent">Expresso</GlowButton>
+						<GlowButton size="sm" variant="ghost">Compact</GlowButton>
+						<GlowButton size="md" variant="primary">Default</GlowButton>
+						<GlowButton size="lg" variant="accent">Express</GlowButton>
 					</div>
 					</GlowBox>
 				</section>
@@ -313,8 +311,8 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 				<section class="style-guide__section" id="chips">
 					<div class="style-guide__section-head">
 						<p class="eyebrow">labels</p>
-						<h2>Chips redondas</h2>
-						<p>Componente Chip concentra tags redondas dos cards de posts e filtros. Variante padrão é ghost.</p>
+						<h2>Rounded chips</h2>
+						<p>The Chip component concentrates all rounded tags used on cards and filters. Ghost is the default variant.</p>
 					</div>
 					<GlowBox accent="highlight" class="chip-panel">
 						<div class="chip-grid">
@@ -324,7 +322,7 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 							<Chip variant="solid">Release</Chip>
 						</div>
 						<p class="chip-panel__note">
-							Use <code>&lt;Chip variant="ghost"&gt;</code> nos cards (matching blog) e <code>variant="solid"</code> para estados que precisam de mais contraste.
+							Use <code>&lt;Chip variant="ghost"&gt;</code> on cards (matches the blog) and go with <code>variant="solid"</code> whenever you need extra contrast.
 						</p>
 					</GlowBox>
 				</section>
@@ -332,13 +330,13 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 			<section class="style-guide__section" id="post-meta-inline">
 				<div class="style-guide__section-head">
 					<p class="eyebrow">posts</p>
-					<h2>Meta inline do artigo</h2>
-					<p>Publicado + contagem de palavras + tempo em linha, acima dos chips. Sem bordas, só ícone e texto.</p>
+					<h2>Inline post meta</h2>
+					<p>Publish date + word count + reading time in a single row above the chips. No borders—just icon and text.</p>
 				</div>
 				<GlowBox accent="accent" class="style-guide__panel post-meta-panel">
 					<div class="post-meta-preview__card">
-						<p class="eyebrow">meta inline</p>
-						<h3>Usar antes das tags</h3>
+						<p class="eyebrow">inline meta</p>
+						<h3>Use right before the tags</h3>
 						<div class="post-meta__info">
 							<span class="post-meta__entry">
 								<span class="post-meta__icon" aria-hidden="true">
@@ -348,7 +346,7 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 										<path d="M3 10h18" />
 									</svg>
 								</span>
-								<span class="post-meta__text">12 jan 2025</span>
+								<span class="post-meta__text">12 Jan 2025</span>
 							</span>
 							<span class="post-meta__entry">
 								<span class="post-meta__icon" aria-hidden="true">
@@ -356,7 +354,7 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 										<path d="M6 7h12M6 12h12M6 17h7" stroke-linecap="round" />
 									</svg>
 								</span>
-								<span class="post-meta__text">1.200 palavras</span>
+								<span class="post-meta__text">1,200 words</span>
 							</span>
 							<span class="post-meta__entry">
 								<span class="post-meta__icon" aria-hidden="true">
@@ -375,44 +373,44 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 						</div>
 					</div>
 					<p class="post-meta-preview__note">
-						As métricas usam <code>.post-meta__text</code> com peso 500 e ícones em verde neon. Empilhe em telas pequenas, mantendo o gap padrão.
+						Use <code>.post-meta__text</code> at weight 500 with neon-green icons. Stack the entries on small screens but keep the default gap.
 					</p>
 				</GlowBox>
 			</section>
 
 			<section class="style-guide__section" id="layouts">
 				<div class="style-guide__section-head">
-					<p class="eyebrow">blocos base</p>
+					<p class="eyebrow">base blocks</p>
 					<h2>GlowBox + Callout</h2>
 					<p>
-						GlowBox organiza painéis e clusters. Dentro dele cabem callouts, listas e qualquer conteúdo editorial mantendo o glow suave.
+						GlowBox organizes panels and clusters. It hosts callouts, lists, and any editorial content while keeping the soft glow.
 					</p>
 				</div>
 				<div class="layout-grid">
 					<GlowBox accent="accent" padding="relaxed" class="layout-card">
-						<h3>GlowBox relaxado</h3>
+						<h3>Relaxed GlowBox</h3>
 						<p>
-							Use <code>padding=&quot;relaxed&quot;</code> para hero secundário ou para destacar blocos densos como changelogs. A borda sempre usa o mesmo gradiente neon.
+							Use <code>padding="relaxed"</code> for secondary heroes or to spotlight dense blocks such as changelogs. The border always uses the default neon gradient.
 						</p>
 						<ul>
-							<li>Accent: destaque principal.</li>
-							<li>Secondary: contrasta com roxo.</li>
-							<li>Highlight: mistura azul e roxo.</li>
+							<li>Accent: primary highlight.</li>
+						<li>Secondary: contrast with purple hues.</li>
+						<li>Highlight: mixes blue and purple.</li>
 						</ul>
 					</GlowBox>
 					<GlowBox accent="secondary" padding="snug" class="layout-card">
-						<h3>Callout embutido</h3>
+						<h3>Embedded callouts</h3>
 						<p>
-							Callout entra direto no GlowBox para notas e avisos. Cada variante comunica um estado.
+							Drop Callout directly inside GlowBox for notes and alerts. Each variant communicates a state.
 						</p>
-						<Callout title="Info padrão" variant="info">
-							<p>Mantém o foco no tom verde neon com contraste máximo.</p>
+						<Callout title="Default info" variant="info">
+							<p>Focuses on neon green with maximum contrast.</p>
 						</Callout>
-						<Callout title="Sucesso" variant="success">
-							<p>Confirmações ou desbloqueios de features.</p>
+						<Callout title="Success" variant="success">
+							<p>Confirmations or feature unlocks.</p>
 						</Callout>
-						<Callout title="Atenção" variant="warning">
-							<p>Alertas suaves, nunca use vermelho.</p>
+						<Callout title="Attention" variant="warning">
+							<p>Soft alerts—never use red.</p>
 						</Callout>
 					</GlowBox>
 				</div>
@@ -420,16 +418,16 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 
 			<section class="style-guide__section" id="utility-buttons">
 				<div class="style-guide__section-head">
-					<p class="eyebrow">controles</p>
-					<h2>Botões utilitários</h2>
-					<p>GitHub circular e botão hamburguer seguem o mesmo glow suave e devem ser usados como estão.</p>
+					<p class="eyebrow">controls</p>
+					<h2>Utility buttons</h2>
+					<p>The circular GitHub button and the hamburger trigger share the same soft glow and should be reused as-is.</p>
 				</div>
 				<GlowBox accent="secondary" class="style-guide__panel">
 					<div class="utility-grid">
 						<div class="utility-card">
 							<p class="eyebrow">github</p>
 							<div class="utility-card__preview">
-								<a href="https://github.com/guisso" class="icon-button" aria-label="Perfis no GitHub">
+								<a href="https://github.com/guisso" class="icon-button" aria-label="GitHub profiles">
 									<svg viewBox="0 0 16 16" aria-hidden="true">
 										<path
 											fill="currentColor"
@@ -439,13 +437,13 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 								</a>
 							</div>
 							<p class="utility-card__description">
-								Círculo 48x48px com borda translúcida, fundo em mesh discreto e ícone branco. Hover eleva 2px e troca a borda para neon.
+								48×48px circle with translucent border, subtle mesh background, and white icon. Hover lifts 2px and swaps the border to neon.
 							</p>
 						</div>
 						<div class="utility-card">
 							<p class="eyebrow">hamburger</p>
 							<div class="utility-card__preview utility-card__preview--stacked">
-								<button type="button" class="utility-hamburger" aria-label="Abrir menu mobile">
+								<button type="button" class="utility-hamburger" aria-label="Open mobile menu">
 									<span class="utility-hamburger__icon" aria-hidden="true">
 										<span></span>
 										<span></span>
@@ -454,7 +452,7 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 								</button>
 							</div>
 							<p class="utility-card__description">
-								Botão circular 52px, borda 1px rgba(255,255,255,0.12) e radial com roxo/azul. As linhas usam gradiente verde→azul.
+								52px circular button, 1px rgba(255,255,255,0.12) border, and purple/blue radial fill. Lines use a green→blue gradient.
 							</p>
 						</div>
 					</div>
@@ -464,8 +462,8 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 			<section class="style-guide__section" id="cards">
 				<div class="style-guide__section-head">
 					<p class="eyebrow">cards</p>
-					<h2>FeaturedProjectCard em ação</h2>
-					<p>Os cards neon usam imagem de fundo com blend modes e CTA em caps. Basta fornecer título, descrição, url e imagem.</p>
+					<h2>FeaturedProjectCard in action</h2>
+					<p>Neon cards rely on blended background images and uppercase CTAs. Provide title, description, URL, and image—that’s it.</p>
 				</div>
 				<GlowBox accent="highlight" class="style-guide__panel">
 					<ul class="featured-projects__grid featured-projects__grid--showcase">
@@ -479,8 +477,8 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 			<section class="style-guide__section" id="post-cards">
 				<div class="style-guide__section-head">
 					<p class="eyebrow">posts</p>
-					<h2>Cards do blog</h2>
-					<p>Grid neon para artigos: mantém meta de leitura, tag e CTA ghost alinhados ao restante do sistema.</p>
+					<h2>Blog cards</h2>
+					<p>Neon grid for articles: keeps reading meta, tag, and ghost CTA aligned with the rest of the system.</p>
 				</div>
 				<GlowBox accent="secondary" class="style-guide__panel">
 					<ul class="featured-projects__grid featured-projects__grid--posts">
@@ -492,7 +490,7 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 								statsLabel={post.stats}
 								tag={post.tag}
 								image={post.image}
-								ctaLabel="ler artigo ↗"
+								ctaLabel="read article ↗"
 							>
 								<span slot="label">{post.dateLabel}</span>
 							</PostCard>
@@ -503,19 +501,19 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 
 			<section class="style-guide__section" id="avatar">
 				<div class="style-guide__section-head">
-					<p class="eyebrow">identidade</p>
-					<h2>Avatar duplo (TalkAvatarBadge)</h2>
-					<p>Mesmo badge que aparece no header: duas fotos empilhadas criam um efeito parallax quando o cursor se aproxima.</p>
+					<p class="eyebrow">identity</p>
+					<h2>Double avatar (TalkAvatarBadge)</h2>
+					<p>The same badge shown on the header: two stacked photos create a parallax vibe when the cursor gets close.</p>
 				</div>
 				<GlowBox accent="highlight" class="avatar-panel">
 					<div class="avatar-panel__preview">
 						<TalkAvatarBadge />
 						<p>
-							O hover desloca o avatar secundário e dá sensação de holograma. Troque imagens via props <code>avatarSrc</code> e <code>photoSrc</code>.
+							Hover offsets the secondary avatar and adds a hologram feel. Swap the images through the <code>avatarSrc</code> and <code>photoSrc</code> props.
 						</p>
 					</div>
 					<p class="avatar-panel__note">
-						Ideal para CTAs pessoais, seções “sobre” e convites para talks — mantém o mesmo glow e não usa libs externas.
+						Ideal for personal CTAs, “about” sections, and talk invitations—keeps the same glow and uses zero external libraries.
 					</p>
 				</GlowBox>
 			</section>
@@ -523,27 +521,26 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 			<section class="style-guide__section" id="logo">
 				<div class="style-guide__section-head">
 					<p class="eyebrow">logo</p>
-					<h2>Versões aprovadas</h2>
-					<p>LogoWordmark responde à cor do container. Use o fundo certo para alternar automaticamente entre branco e preto.</p>
+					<h2>Approved versions</h2>
+					<p>LogoWordmark adapts to the container color. Use the proper background to automatically switch between white and black.</p>
 					<p class="logo-note">
-						Para microsites mantemos variações tipográficas: <strong>gwiki</strong> (wiki.guisso.dev), <strong>gtuner</strong> (guisso.dev/gtuner) e o
-						monograma <strong>G</strong> para ícones compactos.
+						For microsites we keep typographic variations: <strong>gwiki</strong> (wiki.guisso.dev), <strong>gtuner</strong> (guisso.dev/gtuner), and the <strong>G</strong> monogram for compact icons.
 					</p>
 					<div class="logo-assets">
 						<div class="logo-downloads">
-							<GlowButton href="/logo-wordmark.png" variant="accent" size="sm">PNG fundo escuro</GlowButton>
-							<GlowButton href="/logo-wordmark-dark.png" variant="ghost" size="sm">PNG fundo claro</GlowButton>
+							<GlowButton href="/logo-wordmark.png" variant="accent" size="sm">PNG dark background</GlowButton>
+							<GlowButton href="/logo-wordmark-dark.png" variant="ghost" size="sm">PNG light background</GlowButton>
 						</div>
-						<p class="logo-assets__note">Arquivos em 900px, fundo transparente, exportados direto do LogoWordmark oficial.</p>
+						<p class="logo-assets__note">Files are 900px, transparent background, exported directly from the official LogoWordmark.</p>
 					</div>
 				</div>
 				<div class="logo-grid">
 					<div class="logo-swatch logo-swatch--dark">
-						<p>Versão branca (default)</p>
+						<p>White version (default)</p>
 						<LogoWordmark class="logo-sample" aria-hidden="true" />
 					</div>
 					<div class="logo-swatch logo-swatch--light">
-						<p>Versão preta</p>
+						<p>Black version</p>
 						<LogoWordmark class="logo-sample logo-sample--dark" aria-hidden="true" />
 					</div>
 				</div>

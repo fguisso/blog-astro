@@ -7,35 +7,49 @@ import Chip from '../components/Chip.astro';
 import GlowButton from '../components/GlowButton.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import { t } from '../i18n';
+import { getHtmlLang, getRequestLocale, type LocaleCode } from '../i18n/config';
 import { routes } from '../utils/routes';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	slug: string;
 	wordCount?: number;
 	readingTimeMinutes?: number;
+	locale?: LocaleCode;
 };
 
-const { title, description, pubDate, heroImage, tags = [], wordCount, readingTimeMinutes, slug } =
+const { title, description, pubDate, heroImage, tags = [], wordCount, readingTimeMinutes, slug, locale: forcedLocale } =
 	Astro.props as Props;
-const backToBlogHref = routes.blog();
+const locale = forcedLocale ?? getRequestLocale(Astro);
+const currentPath = Astro.url?.pathname ?? '/';
+const currentSearch = Astro.url?.search ?? '';
+const htmlLang = getHtmlLang(locale);
+const backToBlogHref = routes.blog(locale);
 const hasReadingStats =
 	typeof wordCount === 'number' && typeof readingTimeMinutes === 'number';
-const formattedWordCount = hasReadingStats ? wordCount!.toLocaleString('pt-BR') : '';
-const formattedReadingTime = hasReadingStats ? `${readingTimeMinutes} min` : '';
-const ogImagePath = `/og/${slug}.png`;
+const numberFormatter = new Intl.NumberFormat(htmlLang);
+const formattedWordCount = hasReadingStats ? numberFormatter.format(wordCount!) : '';
+const minutesLabel = t(locale, 'common.minutesLabel');
+const wordsLabel = t(locale, 'common.wordsLabel');
+const formattedReadingTime = hasReadingStats ? `${readingTimeMinutes} ${minutesLabel}` : '';
+const ogImagePath = `/og/${locale}/${slug}.png`;
+const categoryLabel = t(locale, 'post.categoryLabel');
+const heroAltPrefix = t(locale, 'post.heroAltPrefix');
+const continueExploring = t(locale, 'post.continueExploring');
+const backCtaLabel = t(locale, 'post.backCta');
 ---
 
-<html lang="en">
+<html lang={htmlLang}>
 	<head>
 		<BaseHead title={title} description={description} image={ogImagePath} />
 	</head>
 
 	<body>
-		<Header />
+		<Header locale={locale} pathname={currentPath} search={currentSearch} />
 		<main class="page-shell post-shell">
 				<article class="post-article" aria-labelledby="post-title">
 					<header class="post-header">
-						<p class="eyebrow">Artigo</p>
+						<p class="eyebrow">{categoryLabel}</p>
 					<h1 id="post-title">{title}</h1>
 					<p class="post-description text-muted">{description}</p>
 					<div class="post-meta__info" aria-label="Informações do artigo">
@@ -48,7 +62,7 @@ const ogImagePath = `/og/${slug}.png`;
 									</svg>
 								</span>
 							<span class="post-meta__text">
-								<FormattedDate date={pubDate} />
+								<FormattedDate date={pubDate} locale={htmlLang} />
 							</span>
 						</span>
 						{
@@ -60,7 +74,9 @@ const ogImagePath = `/og/${slug}.png`;
 												<path d="M6 7h12M6 12h12M6 17h7" stroke-linecap="round" />
 											</svg>
 										</span>
-										<span class="post-meta__text">{formattedWordCount} palavras</span>
+										<span class="post-meta__text">
+											{formattedWordCount} {wordsLabel}
+										</span>
 									</span>
 									<span class="post-meta__entry">
 										<span class="post-meta__icon" aria-hidden="true">
@@ -95,7 +111,7 @@ const ogImagePath = `/og/${slug}.png`;
 								width={1200}
 								height={600}
 								src={heroImage}
-								alt={`Imagem destacada para ${title}`}
+								alt={`${heroAltPrefix} ${title}`}
 								loading="lazy"
 							/>
 						</figure>
@@ -109,16 +125,16 @@ const ogImagePath = `/og/${slug}.png`;
 				</section>
 
 				<footer class="post-footer" aria-label="Navegação complementar">
-					<p class="post-footer__label text-muted">
-						Continue explorando outros insights ou retorne à lista de artigos.
-					</p>
+					<p class="post-footer__label text-muted">{continueExploring}</p>
 					<nav class="post-footer__actions" aria-label="Ações do artigo">
-						<GlowButton href={backToBlogHref} variant="ghost" size="sm">← Voltar para o blog</GlowButton>
+						<GlowButton href={backToBlogHref} variant="ghost" size="sm">
+							{backCtaLabel}
+						</GlowButton>
 					</nav>
 				</footer>
 			</article>
 		</main>
-		<Footer />
+		<Footer locale={locale} />
 	</body>
 </html>
 

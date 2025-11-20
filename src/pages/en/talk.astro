@@ -1,17 +1,17 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import GlowBox from '../components/GlowBox.astro';
-import GlowButton from '../components/GlowButton.astro';
-import Header from '../components/Header.astro';
-import Chip from '../components/Chip.astro';
-import TalkAvatarBadge from '../components/TalkAvatarBadge.astro';
-import Timeline from '../components/Timeline.astro';
-import TimelineItem from '../components/TimelineItem.astro';
-import { getHtmlLang, getRequestLocale } from '../i18n/config';
-import { themeConfig } from '../theme.config';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import GlowBox from '../../components/GlowBox.astro';
+import GlowButton from '../../components/GlowButton.astro';
+import Header from '../../components/Header.astro';
+import Chip from '../../components/Chip.astro';
+import TalkAvatarBadge from '../../components/TalkAvatarBadge.astro';
+import Timeline from '../../components/Timeline.astro';
+import TimelineItem from '../../components/TimelineItem.astro';
+import { getHtmlLang, type LocaleCode } from '../../i18n/config';
+import { themeConfig } from '../../theme.config';
 
-const locale = getRequestLocale(Astro);
+const locale: LocaleCode = 'en';
 const htmlLang = getHtmlLang(locale);
 const currentPath = Astro.url?.pathname ?? '/';
 const currentSearch = Astro.url?.search ?? '';
@@ -41,66 +41,66 @@ type Talk = {
 const repoCard = {
 	title: 'fguisso/talks',
 	description:
-		'Slides versionados com Slidev, publicados automaticamente no GitHub Pages através de uma pipeline GitHub Actions.',
+		'Slide decks built with Slidev and published automatically to GitHub Pages through a GitHub Actions pipeline.',
 	url: 'https://github.com/fguisso/talks',
 };
 
 const repoHighlights = [
-	'Slide deck em Markdown com Slidev',
-	'Deploy contínuo no GitHub Pages',
-	'Trilhas responsivas para usar até no celular',
+	'Markdown-first decks powered by Slidev',
+	'Continuous delivery to GitHub Pages',
+	'Responsive flows that work even on phones',
 ];
 
 const talks: Talk[] = [
 	{
 		event: 'DevOpsDays Natal 2024',
 		tag: 'ebpf',
-		talkTitle: 'K8s Sob Controle: eBPF e Kubescape para Segurança Total',
+		talkTitle: 'K8s Under Control: eBPF and Kubescape for Total Security',
 		summary:
-			'Eu fiz uma postagem com tudo que foi falado: demos de eBPF, políticas kubescape e o fluxo de observabilidade que aplicamos em produção.',
+			'I documented every demo from the talk: eBPF captures, Kubescape policies, and the observability pipeline we run in production.',
 		article: {
-			title: 'eBPF em Ação',
+			title: 'eBPF in Action',
 			url: 'https://guisso.dev/posts/ebpf-and-security/',
-			meta: '8 novembro 2024 · 647 palavras · 4 minutos',
+			meta: 'Nov 8, 2024 · 647 words · 4 minutes',
 		},
 		slides: {
-			label: 'Slides PT-BR',
+			label: 'Slides (PT-BR)',
 			url: 'https://guisso.dev/talks/ebpf-kubescape',
 		},
 	},
 		{
-			event: 'Meetup OWASP Brasília',
+			event: 'Meetup OWASP Brasilia',
 			tag: 'threat-modeling',
 			talkTitle: 'Threat Modeling Express',
 			summary:
-				'Passei por threat modeling hands-on, com fluxos rápidos de STRIDE e catálogos prontos para sair da reunião com histórias de AppSec priorizadas.',
+				'Hands-on threat modeling with fast STRIDE flows and ready-made catalogs so the team leaves the meeting with prioritized AppSec stories.',
 			article: {
 				title: 'Threat Modeling Intro',
 				url: 'https://guisso.dev/posts/threat-modeling-intro/',
-				meta: '28 setembro 2024 · 2739 palavras · 13 minutos',
+				meta: 'Sep 28, 2024 · 2,739 words · 13 minutes',
 			},
 			slides: {
-				label: 'Slides PT-BR',
+				label: 'Slides (PT-BR)',
 				url: 'https://guisso.dev/talks/threat-modeling',
 			},
 			video: {
-				label: 'Assistir no YouTube',
+				label: 'Watch on YouTube',
 				url: 'https://youtu.be/3TVmFqaAA1o',
 			},
 		},
 		{
 			event: 'Debian Day Natal 2024',
 			tag: 'homelab',
-			talkTitle: 'Proxmox e Homelab',
+			talkTitle: 'Proxmox and Homelab',
 			summary:
-				'Esta palestra foi total mão na massa: do bare metal ao cluster Proxmox. Se quiser rever cada comando, deixei o passo a passo completo no post.',
+				'A live, hands-on session: from bare metal to a Proxmox cluster. Every command is written down in the companion post.',
 			article: {
-				title: 'Proxmox e Homelab: Como Transformei um Mini PC em um Servidor de Respeito',
+				title: 'Proxmox and Homelab: Turning a Mini PC into a Respectable Server',
 				url: 'https://guisso.dev/misc/proxmox-debian-day/',
-				meta: '17 agosto 2024 · 576 palavras · 3 minutos',
+				meta: 'Aug 17, 2024 · 576 words · 3 minutes',
 			},
 			slides: {
-				label: 'Slides',
+				label: 'Slides (PT-BR)',
 				url: 'https://guisso.dev/talks/proxmox-homelab',
 			},
 		},
@@ -109,7 +109,7 @@ const talks: Talk[] = [
 		tag: 'LLM',
 		talkTitle: 'OWASP Top 10 LLM Vulnerabilities',
 		summary:
-			'Palestra sobre as top 10 vulnerabilidades em LLM para você evitar nos seus projetos de AI e manter inferência sob controle.',
+			'How to avoid the OWASP Top 10 LLM vulnerabilities in your AI projects and keep inference flows under control.',
 		slides: {
 			label: 'Slides',
 			url: 'https://guisso.dev/talks/top-10-llm-0.5',
@@ -118,9 +118,9 @@ const talks: Talk[] = [
 	{
 		event: 'Potiday JS 2023',
 		tag: 'appsec',
-		talkTitle: 'DevSec - Entendendo e corrigindo vulnerabilidades de Sessão e XSS',
+		talkTitle: 'DevSec — Understanding and fixing Session and XSS vulnerabilities',
 		summary:
-			'A palestra aborda problemas comuns em aplicações JavaScript: vulnerabilidades de sessão e ataques XSS, com técnicas práticas de mitigação.',
+			'Session bugs and XSS attacks are still common on JS apps; this talk breaks down the flaws and shows practical mitigations.',
 		slides: {
 			label: 'Slides',
 			url: 'https://guisso.dev/talks/xss-session',
@@ -129,33 +129,33 @@ const talks: Talk[] = [
 		{
 			event: 'Semana ARATU II',
 			tag: 'appsec',
-			talkTitle: 'DAST na pipeline',
+			talkTitle: 'DAST inside the pipeline',
 			summary:
-				'Como adaptei scanners DAST para caber nos meus pipelines sem travar deploys, com ajustes de perfil e correlação automática de findings.',
+				'How I adapted DAST scanners to fit CI/CD without blocking deploys, tuning profiles and correlating findings automatically.',
 			video: {
-				label: 'Assistir no YouTube',
+				label: 'Watch on YouTube',
 				url: 'https://youtu.be/mNvtYrEjaHA',
 			},
 		},
 		{
 			event: 'DockerCon 2021 · Sala Brasil',
 			tag: 'appsec',
-			talkTitle: 'Segurança de imagens e containers direto na pipeline',
+			talkTitle: 'Container security wired into the pipeline',
 			summary:
-				'Compartilhei o fluxo de hardening de imagens e políticas de runtime que implementei em pipelines GitOps para times distribuídos.',
+				'I shared the container image hardening flow and runtime policies we implemented in GitOps pipelines for distributed teams.',
 			video: {
-				label: 'Assistir no YouTube',
+				label: 'Watch on YouTube',
 				url: 'https://youtu.be/bR9SlnxJI-w',
 			},
 		},
 		{
 			event: 'Campus Party Amazônia',
 			tag: 'blockchain',
-			talkTitle: 'Pagamentos instantâneos com criptomoedas',
+			talkTitle: 'Instant payments with crypto',
 			summary:
-				'Mostrei como montei um stack de pagamentos instantâneos usando carteiras self-hosted, contratos simples e UX acessível.',
+				'How I assembled an instant-payment stack using self-hosted wallets, simple contracts, and accessible UX.',
 			video: {
-				label: 'Assistir no YouTube',
+				label: 'Watch on YouTube',
 				url: 'https://youtu.be/2HKUgc0LjcI',
 			},
 		},
@@ -173,8 +173,8 @@ const externalAttrs = (url?: string): Record<string, string> => {
 <html lang={htmlLang}>
 	<head>
 		<BaseHead
-			title={`Palestras · ${site.title}`}
-			description="Slides e artigos relacionados às minhas talks sobre AppSec, homelab, eBPF e automação."
+			title={`Talks · ${site.title}`}
+			description="Slides and related articles from my sessions on AppSec, homelab, eBPF, and automation."
 		/>
 	</head>
 	<body>
@@ -182,29 +182,27 @@ const externalAttrs = (url?: string): Record<string, string> => {
 		<main class="page-shell talk-shell">
 			<section class="talk-hero">
 				<div class="talk-hero__copy">
-					<p class="eyebrow">palestras</p>
+					<p class="eyebrow">talks</p>
 					<h1>
-            Foi em alguma talk minha? Os <span class="display-special primary">slides</span> estão aqui.
+            Joined one of my talks? All <span class="display-special primary">slides</span> are right here.
 					</h1>
 					<p>
-						Todas as apresentações são criadas em <a href="https://sli.dev" target="_blank" rel="noopener noreferrer">Slidev</a>,
-						versão com <strong>Markdown</strong> e publicadas automaticamente via <strong>GitHub Actions</strong>. Assim consigo abrir os
-						mesmos slides em qualquer device — do auditório ao celular no aeroporto.
+						Every deck is produced in <a href="https://sli.dev" target="_blank" rel="noopener noreferrer">Slidev</a> with <strong>Markdown</strong> and shipped automatically through <strong>GitHub Actions</strong>.
+						I can open the same slides anywhere—from the auditorium to my phone at the airport.
 					</p>
 					<p>
-						Se quiser mergulhar mais fundo, alguns talks viram posts longos no blog com código, links e comandos. Use essa
-						página como hub único para acessar slides, artigos e referências.
+						Want to go deeper? Some talks become long-form blog posts with code, links, and commands. Use this page as the hub to access slides, articles, and references.
 					</p>
 					<div class="talk-hero__profile">
 						<TalkAvatarBadge />
 						<div>
 							<p class="talk-hero__profile-name">Fernando Guisso</p>
-							<p class="talk-hero__profile-note">Compartilhando e aprendendo, hack the planet!</p>
+							<p class="talk-hero__profile-note">Sharing and learning, hack the planet!</p>
 						</div>
 					</div>
 				</div>
 				<GlowBox class="talk-hero__repo" accent="highlight" padding="relaxed">
-					<p class="talk-hero__repo-label">automação</p>
+					<p class="talk-hero__repo-label">automation</p>
 					<h3>{repoCard.title}</h3>
 					<p class="talk-hero__repo-description">{repoCard.description}</p>
 					<ul class="talk-hero__repo-list">
@@ -214,7 +212,7 @@ const externalAttrs = (url?: string): Record<string, string> => {
 					</ul>
 						<div class="talk-hero__repo-actions">
 							<a href="https://sli.dev" class="talk-hero__repo-meta" target="_blank" rel="noopener noreferrer">
-								Feito com Slidev
+								Built with Slidev
 							</a>
 							<GlowButton href={repoCard.url} variant="accent" size="sm" target="_blank" rel="noopener noreferrer">
 								<span class="talk-hero__repo-icon" aria-hidden="true">
@@ -225,7 +223,7 @@ const externalAttrs = (url?: string): Record<string, string> => {
 										/>
 									</svg>
 								</span>
-								Ver repositório
+								View repository
 							</GlowButton>
 						</div>
 					</GlowBox>
@@ -233,12 +231,12 @@ const externalAttrs = (url?: string): Record<string, string> => {
 
 				<section id="agenda" class="talk-list">
 				<div class="section-head">
-					<p class="eyebrow">agenda</p>
+					<p class="eyebrow">schedule</p>
 					<h2>
-						<span class="display-special primary">Talks</span> recentes e materiais para download
+						<span class="display-special primary">Recent talks</span> and downloadable material
 					</h2>
 					<p class="talk-list__intro">
-						Slides responsivos, com demos gravadas e links para artigos complementares. Clique para abrir direto no navegador ou baixar.
+						Responsive slides, recorded demos, and links to companion articles. Open them directly in the browser or download for later.
 					</p>
 				</div>
 				<Timeline class="talk-timeline">
@@ -256,7 +254,7 @@ const externalAttrs = (url?: string): Record<string, string> => {
 								{talk.article && (
 									<a class="talk-card__article" href={talk.article.url} {...externalAttrs(talk.article.url)}>
 										<div>
-											<p class="talk-card__article-label">Post relacionado</p>
+											<p class="talk-card__article-label">Related post</p>
 											<p class="talk-card__article-title">{talk.article.title}</p>
 											{talk.article.meta && <p class="talk-card__article-meta">{talk.article.meta}</p>}
 										</div>
@@ -272,7 +270,7 @@ const externalAttrs = (url?: string): Record<string, string> => {
 												size="sm"
 												{...externalAttrs(talk.article.url)}
 											>
-												Ler artigo
+												Read article
 											</GlowButton>
 										)}
 										{talk.video && (

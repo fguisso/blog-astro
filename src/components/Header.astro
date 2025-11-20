@@ -1,26 +1,58 @@
 ---
 import HeaderLink from './HeaderLink.astro';
+import GlowButton from './GlowButton.astro';
 import LogoWordmark from './LogoWordmark.astro';
 import TalkAvatarBadge from './TalkAvatarBadge.astro';
+import { t } from '../i18n';
+import {
+	DEFAULT_LOCALE,
+	SUPPORTED_LOCALES,
+	buildLocaleToggleHref,
+	getRequestLocale,
+	type LocaleCode,
+} from '../i18n/config';
 import { routes } from '../utils/routes';
 
-const homeHref = routes.home();
-const aboutHref = routes.about();
+interface Props {
+	locale?: LocaleCode;
+	pathname?: string;
+	search?: string;
+}
+
+const { locale: forcedLocale, pathname, search } = Astro.props as Props;
+const locale = forcedLocale ?? getRequestLocale(Astro);
+const currentPath = pathname ?? Astro.url?.pathname ?? '/';
+const currentSearch = search ?? Astro.url?.search ?? '';
+const homeHref = routes.home(locale);
+const aboutHref = routes.about(locale);
 
 const navLinks = [
-	{ href: routes.home(), label: 'Home' },
-	{ href: routes.blog(), label: 'Blog' },
-	{ href: routes.projects(), label: 'Projetos' },
-	{ href: routes.talks(), label: 'Talks' },
-	{ href: routes.tags(), label: 'Tags' },
+	{ href: routes.home(locale), label: t(locale, 'nav.home') },
+	{ href: routes.blog(locale), label: t(locale, 'nav.blog') },
+	{ href: routes.projects(locale), label: t(locale, 'nav.projects') },
+	{ href: routes.talks(locale), label: t(locale, 'nav.talks') },
+	{ href: routes.tags(locale), label: t(locale, 'nav.tags') },
 ];
+
+const toggleLocale = SUPPORTED_LOCALES.find((code) => code !== locale) ?? DEFAULT_LOCALE;
+const localeSwitchHref = buildLocaleToggleHref(currentPath, currentSearch, locale, toggleLocale);
+const switchLabel = t(locale, `nav.switchTo.${toggleLocale}.label`);
+const switchAria = t(locale, `nav.switchTo.${toggleLocale}.aria`);
+const localeMenuLabel = t(locale, 'nav.localeMenu');
+const localeOptions = SUPPORTED_LOCALES.map((code) => ({
+	code,
+	label: t(locale, `nav.switchTo.${code}.label`),
+	aria: t(locale, `nav.switchTo.${code}.aria`),
+	href: buildLocaleToggleHref(currentPath, currentSearch, locale, code),
+	isActive: code === locale,
+}));
 ---
 
 <header class="site-header">
 	<div class="page-shell">
 		<div class="nav-bar">
 			<div class="nav-leading">
-				<a href={homeHref} aria-label="Ir para a página inicial" class="logo-link">
+				<a href={homeHref} aria-label={t(locale, 'nav.ariaHome')} class="logo-link">
 					<LogoWordmark />
 				</a>
 			</div>
@@ -30,12 +62,52 @@ const navLinks = [
 					))}
 				</nav>
 				<div class="nav-cta">
-					<a class="nav-avatar-link" href={aboutHref} aria-label="Ir para a página Sobre">
+					<details class="locale-dropdown">
+						<summary class="locale-toggle" aria-label={localeMenuLabel} title={localeMenuLabel}>
+							<span class="sr-only">{localeMenuLabel}</span>
+							<span aria-hidden="true" class="locale-toggle__icon">
+								<svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+									<defs>
+										<linearGradient id="locale-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+											<stop stop-color="#00FF7F" offset="0%" />
+											<stop stop-color="#6E6EFF" offset="55%" />
+											<stop stop-color="#9A1AFF" offset="100%" />
+										</linearGradient>
+									</defs>
+									<circle cx="12" cy="12" r="8.6" fill="none" stroke="url(#locale-glow)" stroke-width="1.2" />
+									<path
+										d="M12 3.4c-2.5 2-4 5.1-4 8.6s1.5 6.6 4 8.6c2.5-2 4-5.1 4-8.6s-1.5-6.6-4-8.6Z"
+										fill="none"
+										stroke="url(#locale-glow)"
+										stroke-width="1.2"
+										stroke-linejoin="round"
+									/>
+									<path d="M4 9.5h16m-16 5h16" stroke="url(#locale-glow)" stroke-width="1.15" stroke-linecap="round" />
+								</svg>
+							</span>
+						</summary>
+						<div class="locale-dropdown__panel">
+							{localeOptions.map((option) =>
+								option.isActive ? (
+									<span class="locale-option is-active" aria-current="true">
+										<span class="locale-option__dot" aria-hidden="true"></span>
+										<span class="locale-option__text">{option.label}</span>
+									</span>
+								) : (
+									<a class="locale-option" href={option.href} aria-label={option.aria}>
+										<span class="locale-option__dot" aria-hidden="true"></span>
+										<span class="locale-option__text">{option.label}</span>
+									</a>
+								)
+							)}
+						</div>
+					</details>
+					<a class="nav-avatar-link" href={aboutHref} aria-label={t(locale, 'nav.ariaAbout')}>
 						<TalkAvatarBadge />
 					</a>
 					<details class="mobile-menu">
 						<summary class="mobile-menu__toggle">
-							<span class="sr-only">Abrir menu de navegação</span>
+							<span class="sr-only">{t(locale, 'nav.mobileToggle')}</span>
 							<span aria-hidden="true" class="hamburger">
 								<span></span>
 								<span></span>
@@ -43,11 +115,42 @@ const navLinks = [
 							</span>
 						</summary>
 						<div class="mobile-menu__panel">
-							{navLinks.map((link) => (
-								<HeaderLink class="mobile-menu__link" href={link.href}>
-									{link.label}
-								</HeaderLink>
-							))}
+							<div class="mobile-menu__links">
+								{navLinks.map((link) => (
+									<HeaderLink class="mobile-menu__link" href={link.href}>
+										{link.label}
+									</HeaderLink>
+								))}
+							</div>
+							<GlowButton
+								class="mobile-menu__lang"
+								href={localeSwitchHref}
+								variant="ghost"
+								size="sm"
+								aria-label={switchAria}
+							>
+								<span aria-hidden="true" class="locale-toggle__icon locale-toggle__icon--inline">
+									<svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+										<defs>
+											<linearGradient id="locale-glow-mobile" x1="0%" y1="0%" x2="100%" y2="100%">
+												<stop stop-color="#00FF7F" offset="0%" />
+												<stop stop-color="#6E6EFF" offset="55%" />
+												<stop stop-color="#9A1AFF" offset="100%" />
+											</linearGradient>
+										</defs>
+										<circle cx="12" cy="12" r="8.6" fill="none" stroke="url(#locale-glow-mobile)" stroke-width="1.2" />
+										<path
+											d="M12 3.4c-2.5 2-4 5.1-4 8.6s1.5 6.6 4 8.6c2.5-2 4-5.1 4-8.6s-1.5-6.6-4-8.6Z"
+											fill="none"
+											stroke="url(#locale-glow-mobile)"
+											stroke-width="1.2"
+											stroke-linejoin="round"
+										/>
+										<path d="M4 9.5h16m-16 5h16" stroke="url(#locale-glow-mobile)" stroke-width="1.15" stroke-linecap="round" />
+									</svg>
+								</span>
+								{switchLabel}
+							</GlowButton>
 						</div>
 					</details>
 				</div>
@@ -157,6 +260,11 @@ const navLinks = [
 		backdrop-filter: blur(18px);
 	}
 
+	.mobile-menu__links {
+		display: flex;
+		flex-direction: column;
+	}
+
 	.mobile-menu__link {
 		display: block;
 		width: 100%;
@@ -166,12 +274,19 @@ const navLinks = [
 		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 	}
 
+	.mobile-menu__links .mobile-menu__link:last-child {
+		border-bottom: none;
+	}
+
 	.mobile-menu__link:hover {
 		color: var(--color-fg);
 	}
 
-	.mobile-menu__link:last-child {
-		border-bottom: none;
+	.mobile-menu__lang {
+		margin-top: 0.4rem;
+		text-transform: uppercase;
+		display: inline-flex;
+		align-items: center;
 	}
 
 	.mobile-menu:not([open]) .mobile-menu__panel {
@@ -183,6 +298,114 @@ const navLinks = [
 		align-items: center;
 		justify-content: flex-end;
 		gap: 0.65rem;
+	}
+
+	.locale-dropdown {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.locale-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		list-style: none;
+		cursor: pointer;
+		width: 2.85rem;
+		height: 2.85rem;
+		margin: 0;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: radial-gradient(circle at 30% 20%, rgba(0, 255, 127, 0.18), rgba(110, 110, 255, 0.09));
+		box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.02);
+		transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+	}
+
+	.locale-toggle::-webkit-details-marker {
+		display: none;
+	}
+
+	.locale-toggle__icon {
+		display: inline-flex;
+		width: 1.45rem;
+		height: 1.45rem;
+		filter: drop-shadow(0 0 12px rgba(154, 26, 255, 0.35));
+	}
+
+	.locale-toggle__icon--inline {
+		width: 1.1rem;
+		height: 1.1rem;
+		margin-right: 0.35rem;
+	}
+
+	.locale-dropdown[open] .locale-toggle {
+		transform: translateY(-1px);
+		border-color: rgba(110, 110, 255, 0.55);
+		background: radial-gradient(circle at 60% 30%, rgba(154, 26, 255, 0.22), rgba(0, 255, 127, 0.12));
+		box-shadow: 0 22px 50px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06);
+	}
+
+	.locale-dropdown__panel {
+		position: absolute;
+		top: calc(100% + 0.8rem);
+		right: 0;
+		min-width: 11rem;
+		padding: 0.65rem;
+		display: grid;
+		gap: 0.35rem;
+		background: rgba(8, 8, 14, 0.96);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 0.85rem;
+		box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+		backdrop-filter: blur(14px);
+		z-index: 5;
+	}
+
+	.locale-option {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.55rem 0.65rem;
+		border-radius: 0.65rem;
+		color: var(--color-fg);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: linear-gradient(120deg, rgba(0, 255, 127, 0.1), rgba(110, 110, 255, 0.08));
+		box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+		transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+	}
+
+	.locale-option:hover {
+		transform: translateY(-1px);
+		border-color: rgba(0, 255, 127, 0.6);
+		background: linear-gradient(120deg, rgba(0, 255, 127, 0.15), rgba(154, 26, 255, 0.12));
+		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
+	}
+
+	.locale-option__dot {
+		width: 0.65rem;
+		height: 0.65rem;
+		border-radius: 50%;
+		background: linear-gradient(120deg, #00ff7f, #6e6eff);
+		box-shadow: 0 0 12px rgba(154, 26, 255, 0.45);
+	}
+
+	.locale-option__text {
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		font-size: 0.85rem;
+	}
+
+	.locale-option.is-active {
+		cursor: default;
+		border-color: rgba(0, 255, 127, 0.7);
+		background: linear-gradient(120deg, rgba(0, 255, 127, 0.18), rgba(110, 110, 255, 0.16));
+		box-shadow: 0 12px 26px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+	}
+
+	.locale-option.is-active .locale-option__dot {
+		box-shadow: 0 0 16px rgba(0, 255, 127, 0.55);
 	}
 
 	.nav-cta > .nav-avatar-link {
@@ -242,6 +465,9 @@ const navLinks = [
 		.nav-links {
 			order: 3;
 			width: 100%;
+		}
+		.locale-dropdown {
+			display: none;
 		}
 		.nav-cta {
 			order: 2;

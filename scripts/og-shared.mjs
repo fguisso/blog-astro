@@ -17,6 +17,7 @@ const AVATAR_PATH = path.join(projectRoot, 'src', 'assets', 'guisso-avatar.jpg')
 const WORDMARK_PATH = path.join(projectRoot, 'public', 'logo-wordmark.png');
 const BLOG_CONTENT_DIR = path.join(projectRoot, 'src', 'content', 'blog');
 const CONTENT_FILE_EXTENSIONS = new Set(['.md', '.mdx']);
+const DEFAULT_LANG = 'pt';
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
 const RENDER_SCALE = 2;
@@ -90,16 +91,25 @@ export async function loadPostsFromContentStore() {
 	for (const filePath of files) {
 		const raw = await readFile(filePath, 'utf-8');
 		const frontmatter = extractFrontmatter(raw);
-		const slug = path
+		const rawSlug = path
 			.relative(BLOG_CONTENT_DIR, filePath)
 			.replace(/\\/g, '/')
 			.replace(/\.(md|mdx)$/i, '');
+		const canonicalSlug =
+			typeof frontmatter.canonicalSlug === 'string' && frontmatter.canonicalSlug.trim().length > 0
+				? frontmatter.canonicalSlug.trim()
+				: rawSlug;
+		const lang =
+			typeof frontmatter.lang === 'string' && frontmatter.lang.trim().length > 0
+				? frontmatter.lang.trim()
+				: DEFAULT_LANG;
 		posts.push({
-			slug,
+			slug: canonicalSlug,
+			lang,
 			title:
 				typeof frontmatter.title === 'string' && frontmatter.title.trim().length > 0
 					? frontmatter.title.trim()
-					: slug,
+					: canonicalSlug,
 			description: typeof frontmatter.description === 'string' ? frontmatter.description : '',
 			tags: normalizeTagList(frontmatter.tags),
 		});
@@ -231,20 +241,9 @@ export async function loadWordmarkDataUrl() {
 	}
 }
 
-export async function cleanOgOutputFolder(slugs) {
+export async function cleanOgOutputFolder() {
+	await rm(ogOutputDir, { recursive: true, force: true });
 	await mkdir(ogOutputDir, { recursive: true });
-	const entries = await readdir(ogOutputDir);
-	const plannedNames =
-		Array.isArray(slugs) && slugs.length > 0 ? new Set(slugs.map((slug) => `${slug}.png`)) : null;
-	await Promise.all(
-		entries
-			.filter((name) => {
-				if (!name.endsWith('.png')) return false;
-				if (!plannedNames) return true;
-				return plannedNames.has(name);
-			})
-			.map((name) => rm(path.join(ogOutputDir, name), { force: true })),
-	);
 }
 
 export function truncate(text, maxLength) {

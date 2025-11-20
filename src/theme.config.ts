@@ -12,6 +12,7 @@ export type ThemeConfig = {
 		url: string;
 	};
 	featuredProjects: FeaturedProject[];
+	featuredProjectsEn?: FeaturedProject[];
 };
 
 export const themeConfig: ThemeConfig = {
@@ -37,6 +38,28 @@ export const themeConfig: ThemeConfig = {
 		{
 			title: 'Home Lab',
 			description: 'Infra doméstica onde rodo pipelines de AppSec, storage ZFS, Kubernetes e automações; mais detalhes na wiki.',
+			url: 'https://wiki.guisso.dev/linux/homelab',
+			image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
+		},
+	],
+	featuredProjectsEn: [
+		{
+			title: 'sfer.nvim',
+			description:
+				'Lightweight Neovim plugin that displays SARIF files, perfect for CodeQL runs and my daily AppSec tooling.',
+			url: 'https://github.com/fguisso/sfer.nvim',
+			image: 'https://repository-images.githubusercontent.com/989809911/d0c07270-894a-404a-8f87-26e0f9e1dc22',
+		},
+		{
+			title: 'Dojo Shield',
+			description: 'Hands-on exercise to train secure development through guided missions with real-time feedback.',
+			url: 'https://github.com/topics/dojo-shield',
+			image: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80',
+		},
+		{
+			title: 'Home Lab',
+			description:
+				'My home infrastructure running AppSec pipelines, ZFS storage, Kubernetes, and automations—full notes live on the wiki.',
 			url: 'https://wiki.guisso.dev/linux/homelab',
 			image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
 		},

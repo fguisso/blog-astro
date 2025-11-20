@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
+import { DEFAULT_LOCALE, getHtmlLang } from '../i18n/config';
 import { themeConfig } from '../theme.config';
 import { routes } from '../utils/routes';
 
@@ -11,25 +12,26 @@ function resolveSite(context) {
 	return new URL(themeConfig.site.url);
 }
 
-export async function GET(context) {
-	const posts = (await getCollection('blog')).sort(
-		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-	);
+export async function buildRssResponse(context, locale = DEFAULT_LOCALE) {
+	const posts = (await getCollection('blog'))
+		.filter((post) => post.data.lang === locale)
+		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 	const site = resolveSite(context);
-	const siteWithBase = new URL(routes.home(), site);
+	const siteWithBase = new URL(routes.home(locale), site);
 	const stylesheet = routes.rssStylesheet();
-	const homeLink = routes.home();
+	const homeLink = routes.home(locale);
 	const absoluteUrl = (path) => new URL(path, site).toString();
+	const feedLanguage = getHtmlLang(locale);
 
 	return rss({
 		title: themeConfig.site.title,
 		description: themeConfig.site.description,
 		site: siteWithBase.toString(),
 		stylesheet,
-		customData: `<language>pt-BR</language><homeLink>${homeLink}</homeLink>`,
+		customData: `<language>${feedLanguage}</language><homeLink>${homeLink}</homeLink>`,
 		items: posts.map((post) => {
 			const updated = post.data.updatedDate ? post.data.updatedDate.toUTCString() : null;
-			const link = absoluteUrl(routes.blogPost(post.id));
+			const link = absoluteUrl(routes.blogPost(post.data.canonicalSlug ?? post.slug, locale));
 			return {
 				title: post.data.title,
 				description: post.data.description,
@@ -40,4 +42,9 @@ export async function GET(context) {
 			};
 		}),
 	});
+}
+
+export async function GET(context) {
+	const locale = context.currentLocale ?? DEFAULT_LOCALE;
+	return buildRssResponse(context, locale);
 }

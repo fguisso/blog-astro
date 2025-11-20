@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import { getHtmlLang, getRequestLocale, type LocaleCode } from '../i18n/config';
 
 interface Props {
 	title: string;
@@ -9,16 +10,22 @@ interface Props {
 	eyebrow?: string;
 }
 
-const { title, description, eyebrow } = Astro.props as Props;
+const { title, description, eyebrow, locale: forcedLocale } = Astro.props as Props & {
+	locale?: LocaleCode;
+};
+const locale = forcedLocale ?? getRequestLocale(Astro);
+const currentPath = Astro.url?.pathname ?? '/';
+const currentSearch = Astro.url?.search ?? '';
+const htmlLang = getHtmlLang(locale);
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang={htmlLang}>
 	<head>
 		<BaseHead title={title} description={description ?? 'Página de conteúdo'} />
 	</head>
 	<body>
-		<Header />
+		<Header locale={locale} pathname={currentPath} search={currentSearch} />
 		<main class="page-shell markdown-page">
 			<section class="markdown-page__hero">
 				{eyebrow && <p class="eyebrow">{eyebrow}</p>}
@@ -29,7 +36,7 @@ const { title, description, eyebrow } = Astro.props as Props;
 				<slot />
 			</section>
 		</main>
-		<Footer />
+		<Footer locale={locale} />
 	</body>
 </html>
 

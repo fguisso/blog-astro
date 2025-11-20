@@ -1,9 +1,8 @@
 import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
-import { DEFAULT_LOCALE, getRequestLocale } from '../../i18n/config';
-import { themeConfig } from '../../theme.config';
-import { groupPostsByTag } from '../../utils/tags';
-import { routes } from '../../utils/routes';
+import { themeConfig } from '../../../theme.config';
+import { groupPostsByTag } from '../../../utils/tags';
+import { routes } from '../../../utils/routes';
 
 function resolveSite(context) {
 	if (context.site) {
@@ -26,7 +25,8 @@ export async function getStaticPaths() {
 	}));
 }
 
-export async function buildTagFeedResponse(context, locale = DEFAULT_LOCALE) {
+export async function GET(context) {
+	const locale = 'en';
 	const { tagLabel, posts } = context.props;
 	const site = resolveSite(context);
 	const siteWithBase = new URL(routes.home(locale), site);
@@ -37,7 +37,7 @@ export async function buildTagFeedResponse(context, locale = DEFAULT_LOCALE) {
 
 	return rss({
 		title: `${themeConfig.site.title} - ${tagLabel}`,
-		description: `O endereço desta página também é um RSS feed. Use no seu leitor favorito para seguir apenas meus posts sobre ${tagLabel}.`,
+		description: `This page is also an RSS feed. Subscribe to follow only the posts tagged ${tagLabel}.`,
 		site: siteWithBase.toString(),
 		stylesheet,
 		customData: `<homeLink>${homeLink}</homeLink>`,
@@ -49,9 +49,4 @@ export async function buildTagFeedResponse(context, locale = DEFAULT_LOCALE) {
 			link: absoluteUrl(routes.blogPost(post.data.canonicalSlug ?? post.slug, locale)),
 		})),
 	});
-}
-
-export async function GET(context) {
-	const locale = getRequestLocale(context) ?? DEFAULT_LOCALE;
-	return buildTagFeedResponse(context, locale);
 }

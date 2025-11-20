@@ -62,8 +62,11 @@ const server = http.createServer(async (req, res) => {
 	}
 
 	if (parsedUrl.pathname?.startsWith('/og/') && parsedUrl.pathname.endsWith('.png')) {
-		const slug = decodeURIComponent(parsedUrl.pathname.replace(/^\/og\//, '').replace(/\.png$/, ''));
-		const post = posts.find((entry) => entry.slug === slug);
+		const ogMatch = parsedUrl.pathname.match(/^\/og\/([^/]+)\/([^/]+)\.png$/);
+		const [, langSegment, slugSegment] = ogMatch ?? [];
+		const slug = slugSegment ? decodeURIComponent(slugSegment) : null;
+		const lang = langSegment ? decodeURIComponent(langSegment) : null;
+		const post = posts.find((entry) => entry.slug === slug && entry.lang === lang);
 		if (!post) {
 			res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found');
 			return;
@@ -85,9 +88,9 @@ const server = http.createServer(async (req, res) => {
 		.map(
 			(post) => `
 				<article>
-					<h2>${post.title}</h2>
+					<h2>${post.title} <small>(${post.lang})</small></h2>
 					<p>${post.description}</p>
-					<img src="/og/${encodeURIComponent(post.slug)}.png" alt="${post.title}" loading="lazy" />
+					<img src="/og/${encodeURIComponent(post.lang)}/${encodeURIComponent(post.slug)}.png" alt="${post.title}" loading="lazy" />
 				</article>
 `,
 		)

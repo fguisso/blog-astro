@@ -1,14 +1,13 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { getCollection, render } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
-import { getLocaleFromRoutePattern, getRequestLocale, type LocaleCode } from '../../i18n/config';
+import BlogPost from '../../../layouts/BlogPost.astro';
+import { type LocaleCode } from '../../../i18n/config';
 
-export async function getStaticPaths({ routePattern }: { routePattern: string }) {
-	const locale = getLocaleFromRoutePattern(routePattern);
+export async function getStaticPaths() {
 	const posts = await getCollection('blog');
 	return posts
-		.filter((post) => post.data.lang === locale)
+		.filter((post) => post.data.lang === 'en')
 		.map((post) => ({
 			params: { slug: post.data.canonicalSlug ?? post.slug },
 			props: { post },
@@ -18,7 +17,7 @@ export async function getStaticPaths({ routePattern }: { routePattern: string })
 type Props = { post: CollectionEntry<'blog'> };
 
 const { post } = Astro.props as Props;
-const locale = post.data.lang as LocaleCode;
+const locale: LocaleCode = 'en';
 const totalWords = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
 const readingTimeMinutes = Math.max(1, Math.ceil(totalWords / 200));
 const { Content } = await render(post);

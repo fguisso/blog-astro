@@ -1,19 +1,19 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import GlowButton from '../components/GlowButton.astro';
-import HeroCanvas from '../components/HeroCanvas.astro';
-import Header from '../components/Header.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import FeaturedProjectCard from '../components/FeaturedProjectCard.astro';
-import PostCard from '../components/PostCard.astro';
-import { t } from '../i18n';
-import { getHtmlLang, getRequestLocale } from '../i18n/config';
-import { themeConfig } from '../theme.config';
-import { routes } from '../utils/routes';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import GlowButton from '../../components/GlowButton.astro';
+import HeroCanvas from '../../components/HeroCanvas.astro';
+import Header from '../../components/Header.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import FeaturedProjectCard from '../../components/FeaturedProjectCard.astro';
+import PostCard from '../../components/PostCard.astro';
+import { t } from '../../i18n';
+import { getHtmlLang, type LocaleCode } from '../../i18n/config';
+import { themeConfig } from '../../theme.config';
+import { routes } from '../../utils/routes';
 
-const locale = getRequestLocale(Astro);
+const locale: LocaleCode = 'en';
 const htmlLang = getHtmlLang(locale);
 const currentPath = Astro.url?.pathname ?? '/';
 const currentSearch = Astro.url?.search ?? '';
@@ -52,7 +52,9 @@ const postStats = new Map(
 const latestInitial = posts.slice(0, 3);
 const hasAdditionalPosts = posts.length > latestInitial.length;
 
-const { site, featuredProjects } = themeConfig;
+const { site, featuredProjects, featuredProjectsEn } = themeConfig;
+const localizedFeaturedProjects =
+	featuredProjectsEn && featuredProjectsEn.length > 0 ? featuredProjectsEn : featuredProjects;
 const homeLabTagHref = routes.blogTagFilter('home-lab', locale);
 const projectsHref = routes.projects(locale);
 const blogHref = routes.blog(locale);
@@ -68,42 +70,40 @@ const blogHref = routes.blog(locale);
 		<main class="page-shell home-shell">
 			<section class="hero">
 				<div class="hero__content">
-					<p class="eyebrow hero__eyebrow">Sobre</p>
+					<p class="eyebrow hero__eyebrow">About</p>
 					<h1 class="hero__heading">
-						Oi, eu sou o <span class="display-special primary">Fernando Guisso</span>.
+						Hi, I'm <span class="display-special primary">Fernando Guisso</span>.
 					</h1>
 					<p class="hero__line">
-						Sou Secure Software Engineer no willbank, onde lidero a área de AppSec e a plataforma interna de autenticação.
+						I'm a Secure Software Engineer at willbank where I lead the AppSec practice and its internal authentication platform.
 					</p>
 					<p class="hero__line">
-						Crio soluções que tornam a segurança parte natural do desenvolvimento, ajudando engenheiros a
-						construir produtos seguros sem perder velocidade —
-						<span class="hero__line--alt">porque segurança boa é aquela que vem junto com o código.</span>
+						I build solutions that make security a natural part of the developer workflow—helping engineers ship safely without losing speed.
+						<span class="hero__line--alt">The best security is the one that ships with the code.</span>
 					</p>
 					<p class="hero__line">
-						Quando sobra energia, perco horas afinando meu <strong>home lab</strong>: você encontra algumas histórias
-						com a tag <a href={homeLabTagHref}>home-lab</a> ou mergulha nos detalhes técnicos dentro da{' '}
-						<a href="https://wiki.guisso.dev/linux/homelab" target="_blank" rel="noopener noreferrer">minha wiki</a>.
+						In my spare time I obsess over my <strong>home lab</strong>: explore experiments tagged <a href={homeLabTagHref}>home-lab</a> or dive into the gritty details on{' '}
+						<a href="https://wiki.guisso.dev/linux/homelab" target="_blank" rel="noopener noreferrer">my wiki</a>.
 					</p>
 					<div class="hero__cta">
-						<GlowButton href="#latest" variant="accent" size="lg">Ver posts</GlowButton>
-						<GlowButton href={blogHref} variant="ghost" size="lg">Arquivo completo</GlowButton>
+						<GlowButton href="#latest" variant="accent" size="lg">See posts</GlowButton>
+						<GlowButton href={blogHref} variant="ghost" size="lg">Full archive</GlowButton>
 					</div>
 				</div>
 				<HeroCanvas />
 			</section>
 
-			{featuredProjects.length > 0 && (
+			{localizedFeaturedProjects.length > 0 && (
 				<section class="featured-projects">
 					<div class="featured-projects__head">
 						<div class="featured-projects__head-text">
-							<p class="eyebrow">projetos principais</p>
-              <h1 class="featured-projects__title"><span class="display-special primary">Projetos</span> em que estou trabalhando agora</h2>
+							<p class="eyebrow">featured projects</p>
+              <h1 class="featured-projects__title"><span class="display-special primary">Projects</span> I'm building right now</h2>
 						</div>
-						<GlowButton href={projectsHref} variant="ghost" size="sm">Ver projetos</GlowButton>
+						<GlowButton href={projectsHref} variant="ghost" size="sm">See projects</GlowButton>
 					</div>
 						<ul class="featured-projects__grid">
-							{featuredProjects.map((project) => (
+							{localizedFeaturedProjects.map((project) => (
 							<FeaturedProjectCard project={project} />
 						))}
 					</ul>
@@ -111,14 +111,14 @@ const blogHref = routes.blog(locale);
 			)}
 
 				<section id="latest" class="latest">
-					<div class="section-head section-head--split">
-						<div>
-							<p class="eyebrow">novos artigos</p>
-							<h2>
-                Veja o que eu <em><span class="display-special primary">ando escrevendo</span></em>
-							</h2>
+						<div class="section-head section-head--split">
+							<div>
+								<p class="eyebrow">new articles</p>
+								<h2>
+                Here's what I'm <em><span class="display-special primary">writing lately</span></em>
+								</h2>
+							</div>
 						</div>
-					</div>
 					<ul id="latest-grid" class="featured-projects__grid featured-projects__grid--posts">
 						{latestInitial.map((post) => {
 					const stats = postStats.get(slugFor(post));
@@ -138,13 +138,14 @@ const blogHref = routes.blog(locale);
 					</ul>
 					{hasAdditionalPosts && (
 						<div class="center">
-							<GlowButton href={blogHref} variant="accent" size="sm">Veja mais</GlowButton>
+							<GlowButton href={blogHref} variant="accent" size="sm">See more</GlowButton>
 						</div>
 					)}
 			</section>
 
 		</main>
 		<Footer locale={locale} />
+
 	</body>
 </html>
 
