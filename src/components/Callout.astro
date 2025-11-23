@@ -1,5 +1,5 @@
 ---
-const { title = 'Nota', variant = 'info' } = Astro.props;
+const { title = 'Nota', variant = 'info', icon } = Astro.props;
 
 const colors = {
 	info: {
@@ -14,12 +14,20 @@ const colors = {
 		background: 'rgba(26, 145, 70, 0.18)',
 		border: 'rgb(26, 145, 70)',
 	},
+	danger: {
+		background: 'linear-gradient(135deg, rgba(255, 77, 109, 0.18), rgba(154, 26, 255, 0.18))',
+		border: 'rgb(255, 77, 109)',
+	},
 };
 const current = colors[variant] ?? colors.info;
+const renderedIcon = icon ?? null;
 ---
 
 <div class="callout" style={`background:${current.background};border-color:${current.border}`}>
-	<p class="title">{title}</p>
+	<div class="header">
+		{renderedIcon && <span class="icon" aria-hidden="true">{renderedIcon}</span>}
+		<p class="title">{title}</p>
+	</div>
 	<div class="body">
 		<slot />
 	</div>
@@ -34,9 +42,28 @@ const current = colors[variant] ?? colors.info;
 		box-shadow: var(--box-shadow);
 	}
 
+	.header {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
 	.title {
 		margin: 0 0 0.35rem;
 		font-weight: 600;
+		color: rgb(var(--black));
+	}
+
+	.icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 0.55rem;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		background: rgba(255, 255, 255, 0.06);
+		font-size: 0.95rem;
 		color: rgb(var(--black));
 	}
 

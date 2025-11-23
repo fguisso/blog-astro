@@ -329,6 +329,30 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 					</GlowBox>
 				</section>
 
+				<section class="style-guide__section" id="pills">
+					<div class="style-guide__section-head">
+						<p class="eyebrow">badges</p>
+						<h2>Pills para listas numeradas</h2>
+						<p>Classes utilitárias: <code>.pill</code> + cor.</p>
+					</div>
+					<GlowBox accent="highlight" class="pill-panel">
+						<div class="pill-row">
+							<span class="pill">base</span>
+							<span class="pill pill-orange">A1</span>
+							<span class="pill pill-red">T1</span>
+							<span class="pill pill-blue">C1</span>
+							<span class="pill pill-green">G1</span>
+							<span class="pill pill-purple">P1</span>
+						</div>
+						<p>
+							Use <code>.pill</code> como base e combine com:
+							<code>.pill-orange</code> , <code>.pill-red</code> , <code>.pill-blue</code> ,
+							<code>.pill-green</code> e <code>.pill-purple</code>.
+							Exemplo: <code>&lt;span class="pill pill-red"&gt;T2&lt;/span&gt;</code>.
+						</p>
+					</GlowBox>
+				</section>
+
 			<section class="style-guide__section" id="post-meta-inline">
 				<div class="style-guide__section-head">
 					<p class="eyebrow">posts</p>
@@ -403,8 +427,11 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 					<GlowBox accent="secondary" padding="snug" class="layout-card">
 						<h3>Callout embutido</h3>
 						<p>
-							Callout entra direto no GlowBox para notas e avisos. Cada variante comunica um estado.
+							Callout entra direto no GlowBox para notas e avisos. O prop <code>icon</code> aceita emoji ou SVG inline e <code>variant</code> define o estado.
 						</p>
+						<Callout title="CTA com ícone" variant="danger" icon="🔥">
+							<p>Use o gradiente <code>danger</code> para CTAs de leitura (ex.: mini games). Ícone é opcional.</p>
+						</Callout>
 						<Callout title="Info padrão" variant="info">
 							<p>Mantém o foco no tom verde neon com contraste máximo.</p>
 						</Callout>

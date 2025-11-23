@@ -11,6 +11,7 @@ import {
 	ogOutputDir,
 	projectRoot,
 	readSiteMeta,
+	renderDefaultOgImageBuffer,
 	renderOgImageBuffer,
 	runAstroSync,
 } from './og-shared.mjs';
@@ -29,12 +30,23 @@ async function main() {
 			loadAvatarDataUrl(),
 			loadWordmarkDataUrl(),
 		]);
-		if (posts.length === 0) {
-			log('No blog posts found. Skipping OG generation.');
-			return;
-		}
 		await ensureOutputDir();
 		await cleanOgOutputFolder();
+		const defaultOg = await renderDefaultOgImageBuffer(fonts, siteMeta, { logoWordmarkSrc });
+		const defaultOutputPaths = [
+			path.join(ogOutputDir, 'blog-default.png'),
+			path.join(ogOutputDir, 'pt', 'blog-default.png'),
+			path.join(ogOutputDir, 'en', 'blog-default.png'),
+		];
+		for (const outputPath of defaultOutputPaths) {
+			await mkdir(path.dirname(outputPath), { recursive: true });
+			await writeFile(outputPath, defaultOg);
+			log(`Created ${path.relative(projectRoot, outputPath)}`);
+		}
+		if (posts.length === 0) {
+			log('No blog posts found. Generated only the default OG image.');
+			return;
+		}
 		let successCount = 0;
 		const failures = [];
 		for (const post of posts) {

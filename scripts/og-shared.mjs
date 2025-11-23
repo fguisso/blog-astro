@@ -251,6 +251,16 @@ export function truncate(text, maxLength) {
 	return text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text;
 }
 
+function formatBlogUrl(siteUrl) {
+	try {
+		const url = new URL('/blog', siteUrl);
+		const withoutTrailingSlash = url.pathname.replace(/\/+$/, '');
+		return `${url.host}${withoutTrailingSlash}`;
+	} catch {
+		return 'guisso.dev/blog';
+	}
+}
+
 export function createCardTree({ title, description, tags, siteTitle, siteUrl, avatarSrc, logoWordmarkSrc }) {
 	const accentGradient = 'linear-gradient(120deg, #00FF7F 0%, #9A1AFF 55%, #6E6EFF 100%)';
 	const safeSiteTitle =
@@ -570,6 +580,169 @@ export function createCardTree({ title, description, tags, siteTitle, siteUrl, a
 	};
 }
 
+export function createCenteredInviteTree({ siteTitle, siteUrl, logoWordmarkSrc }) {
+	const accentGradient = 'linear-gradient(135deg, #00FF7F 0%, #9A1AFF 55%, #6E6EFF 100%)';
+	const chips = ['Security', 'AppSec', 'Dev', 'Home Lab'];
+	const chipElements = chips.map((chip) => ({
+		type: 'div',
+		props: {
+			style: {
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				padding: '12px 20px',
+				borderRadius: '999px',
+				border: '1px solid rgba(255,255,255,0.2)',
+				background: 'rgba(255,255,255,0.06)',
+				color: '#F5F5FF',
+				fontSize: '20px',
+				fontWeight: 700,
+				letterSpacing: '0.22em',
+				margin: '6px',
+			},
+			children: [chip.toUpperCase()],
+		},
+	}));
+
+	const brandNode = logoWordmarkSrc
+		? {
+				type: 'img',
+				props: {
+					src: logoWordmarkSrc,
+					width: 460,
+					height: 120,
+					style: {
+						width: '420px',
+						height: '90px',
+						objectFit: 'contain',
+						objectPosition: 'center',
+						marginTop: '12px',
+						marginBottom: '12px',
+					},
+				},
+			}
+		: {
+				type: 'div',
+				props: {
+					style: {
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						marginTop: '6px',
+						marginBottom: '6px',
+						color: '#F5F5FF',
+					},
+					children: [
+						{
+							type: 'span',
+							props: {
+								style: {
+									fontSize: '62px',
+									lineHeight: '1.05',
+									fontFamily: 'Oferta do Dia',
+								},
+								children: [siteTitle ?? 'Guisso.dev'],
+							},
+						},
+					],
+				},
+			};
+
+	const blogUrlLabel = "https://guisso.dev";
+
+	return {
+		type: 'div',
+		props: {
+			style: {
+				width: '100%',
+				height: '100%',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				backgroundColor: '#020204',
+				backgroundImage:
+					'radial-gradient(circle at 18% 18%, rgba(0,255,127,0.24), transparent 42%), radial-gradient(circle at 82% 16%, rgba(154,26,255,0.22), transparent 48%), radial-gradient(circle at 50% 88%, rgba(110,110,255,0.2), transparent 50%)',
+				color: '#F5F5FF',
+				fontFamily: 'Inter',
+				padding: '64px 72px',
+				position: 'relative',
+			},
+			children: [
+				{
+					type: 'div',
+					props: {
+						style: {
+							width: '100%',
+							maxWidth: '1020px',
+							padding: '60px 70px',
+							borderRadius: '32px',
+							border: '1px solid rgba(255,255,255,0.08)',
+							background: 'rgba(12,12,16,0.9)',
+							boxShadow: '0 28px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04)',
+							position: 'relative',
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'center',
+							textAlign: 'center',
+							overflow: 'hidden',
+						},
+						children: [
+							{
+								type: 'div',
+								props: {
+									style: {
+										position: 'relative',
+										display: 'flex',
+										flexDirection: 'column',
+										alignItems: 'center',
+										width: '100%',
+									},
+									children: [
+										brandNode,
+										{
+											type: 'div',
+											props: {
+												style: {
+													marginTop: '10px',
+													display: 'flex',
+													flexWrap: 'wrap',
+													justifyContent: 'center',
+													maxWidth: '880px',
+												},
+												children: chipElements,
+											},
+										},
+										{
+											type: 'div',
+											props: {
+												style: {
+													marginTop: '28px',
+													display: 'flex',
+													alignItems: 'center',
+													justifyContent: 'center',
+													fontSize: '22px',
+													fontWeight: 700,
+													letterSpacing: '0.16em',
+													backgroundImage: accentGradient,
+													WebkitBackgroundClip: 'text',
+													backgroundClip: 'text',
+													color: 'transparent',
+													textTransform: 'uppercase',
+												},
+												children: [blogUrlLabel.toUpperCase()],
+											},
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+			],
+		},
+	};
+}
+
 export async function renderOgImageBuffer(post, fonts, siteMeta, assets) {
 	// Keep the title within ~2 lines (1056px usable width, 70px font ≈ 18px per glyph).
 	const TITLE_MAX_CHARS = 24;
@@ -582,6 +755,34 @@ export async function renderOgImageBuffer(post, fonts, siteMeta, assets) {
 		siteTitle: siteMeta.title,
 		siteUrl: siteMeta.url,
 		avatarSrc: assets?.avatarSrc ?? null,
+		logoWordmarkSrc: assets?.logoWordmarkSrc ?? null,
+	});
+	const svg = await satori(tree, {
+		width: OG_WIDTH,
+		height: OG_HEIGHT,
+		fonts,
+	});
+	const resvg = new Resvg(svg, {
+		fitTo: {
+			mode: 'width',
+			value: OG_WIDTH * RENDER_SCALE,
+		},
+		background: '#020204',
+	});
+	const png = resvg.render().asPng();
+	if (RENDER_SCALE === 1) {
+		return png;
+	}
+	return sharp(png)
+		.resize(OG_WIDTH, OG_HEIGHT, { fit: 'cover' })
+		.png({ compressionLevel: 9 })
+		.toBuffer();
+}
+
+export async function renderDefaultOgImageBuffer(fonts, siteMeta, assets) {
+	const tree = createCenteredInviteTree({
+		siteTitle: siteMeta?.title ?? 'Guisso.dev',
+		siteUrl: siteMeta?.url ?? 'https://guisso.dev',
 		logoWordmarkSrc: assets?.logoWordmarkSrc ?? null,
 	});
 	const svg = await satori(tree, {
