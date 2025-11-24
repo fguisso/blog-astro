@@ -9,13 +9,13 @@ import TalkAvatarBadge from '../../components/TalkAvatarBadge.astro';
 import Timeline from '../../components/Timeline.astro';
 import TimelineItem from '../../components/TimelineItem.astro';
 import { getHtmlLang, type LocaleCode } from '../../i18n/config';
-import { themeConfig } from '../../theme.config';
+import { getSiteMeta } from '../../theme.config';
 
 const locale: LocaleCode = 'en';
 const htmlLang = getHtmlLang(locale);
 const currentPath = Astro.url?.pathname ?? '/';
 const currentSearch = Astro.url?.search ?? '';
-const { site } = themeConfig;
+const site = getSiteMeta(locale);
 
 type TalkArticle = {
 	title: string;
@@ -175,6 +175,7 @@ const externalAttrs = (url?: string): Record<string, string> => {
 		<BaseHead
 			title={`Talks · ${site.title}`}
 			description="Slides and related articles from my sessions on AppSec, homelab, eBPF, and automation."
+			locale={locale}
 		/>
 	</head>
 	<body>

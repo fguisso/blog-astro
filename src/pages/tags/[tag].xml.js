@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
 import { DEFAULT_LOCALE, getRequestLocale } from '../../i18n/config';
-import { themeConfig } from '../../theme.config';
+import { getSiteMeta, themeConfig } from '../../theme.config';
 import { groupPostsByTag } from '../../utils/tags';
 import { routes } from '../../utils/routes';
 
@@ -34,9 +34,10 @@ export async function buildTagFeedResponse(context, locale = DEFAULT_LOCALE) {
 	const homeLink = routes.home(locale);
 	const absoluteUrl = (path) => new URL(path, site).toString();
 	const filteredPosts = posts.filter((post) => post.data.lang === locale);
+	const siteMeta = getSiteMeta(locale);
 
 	return rss({
-		title: `${themeConfig.site.title} - ${tagLabel}`,
+		title: `${siteMeta.title} - ${tagLabel}`,
 		description: `O endereço desta página também é um RSS feed. Use no seu leitor favorito para seguir apenas meus posts sobre ${tagLabel}.`,
 		site: siteWithBase.toString(),
 		stylesheet,

@@ -22,7 +22,7 @@ const htmlLang = getHtmlLang(locale);
 <!doctype html>
 <html lang={htmlLang}>
 	<head>
-		<BaseHead title={title} description={description ?? 'Página de conteúdo'} />
+		<BaseHead title={title} description={description ?? 'Página de conteúdo'} locale={locale} />
 	</head>
 	<body>
 		<Header locale={locale} pathname={currentPath} search={currentSearch} />

@@ -7,11 +7,12 @@ import Header from '../../components/Header.astro';
 import Callout from '../../components/Callout.astro';
 import FeaturedProjectCard from '../../components/FeaturedProjectCard.astro';
 import TalkAvatarBadge from '../../components/TalkAvatarBadge.astro';
+import Timeline from '../../components/Timeline.astro';
 import LogoWordmark from '../../components/LogoWordmark.astro';
 import PostCard from '../../components/PostCard.astro';
 import Chip from '../../components/Chip.astro';
 import { getHtmlLang, type LocaleCode } from '../../i18n/config';
-import { themeConfig } from '../../theme.config';
+import { getSiteMeta, themeConfig } from '../../theme.config';
 import { routes } from '../../utils/routes';
 
 const palette = [
@@ -146,7 +147,8 @@ const locale: LocaleCode = 'en';
 const htmlLang = getHtmlLang(locale);
 const currentPath = Astro.url?.pathname ?? '/';
 const currentSearch = Astro.url?.search ?? '';
-const { site, featuredProjects, featuredProjectsEn } = themeConfig;
+const site = getSiteMeta(locale);
+const { featuredProjects, featuredProjectsEn } = themeConfig;
 const localizedFeaturedProjects =
 	featuredProjectsEn && featuredProjectsEn.length > 0 ? featuredProjectsEn : featuredProjects;
 const projectSamples = localizedFeaturedProjects.slice(0, 2);
@@ -157,7 +159,11 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 <!doctype html>
 <html lang={htmlLang}>
 	<head>
-		<BaseHead title={`Style Guide · ${site.title}`} description="Visual reference with every neon component used across the blog." />
+		<BaseHead
+			title={`Style Guide · ${site.title}`}
+			description="Visual reference with every neon component used across the blog."
+			locale={locale}
+		/>
 	</head>
 	<body>
 		<Header locale={locale} pathname={currentPath} search={currentSearch} />
@@ -398,6 +404,26 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 					</div>
 					<p class="post-meta-preview__note">
 						Use <code>.post-meta__text</code> at weight 500 with neon-green icons. Stack the entries on small screens but keep the default gap.
+					</p>
+				</GlowBox>
+			</section>
+
+			<section class="style-guide__section" id="timeline">
+				<div class="style-guide__section-head">
+					<p class="eyebrow">layout</p>
+					<h2>Timeline block</h2>
+					<p>Vertical path with neon spine and dots. Use it for career highlights or milestones.</p>
+				</div>
+				<GlowBox accent="highlight" class="style-guide__panel timeline-panel">
+					<Timeline
+						items={[
+							{ meta: '2024 — now', role: 'will bank · Security Software Engineer (AppSec & Sec Eng)' },
+							{ meta: '2022 — 2024', role: 'Globo · Security practice for large engineering teams' },
+							{ meta: '2017 — 2019', role: 'Communities · Goroa + Dumont Hackerspace' },
+						]}
+					/>
+					<p class="timeline-note">
+						Use <code>&lt;Timeline /&gt;</code> inside GlowBox. The component ships with the neon spine, centered dots, and spacing tuned for the dark theme.
 					</p>
 				</GlowBox>
 			</section>
@@ -910,6 +936,17 @@ const samplePostHref = routes.blogPost('exemplo', locale);
 		flex-wrap: wrap;
 		gap: 0.5rem;
 	}
+
+	.timeline-panel {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.timeline-note {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
 
 	.post-meta-preview__note {
 		margin: 0;

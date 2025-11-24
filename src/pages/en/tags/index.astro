@@ -6,7 +6,7 @@ import Footer from '../../../components/Footer.astro';
 import GlowButton from '../../../components/GlowButton.astro';
 import Header from '../../../components/Header.astro';
 import { getHtmlLang, type LocaleCode } from '../../../i18n/config';
-import { themeConfig } from '../../../theme.config';
+import { getSiteMeta } from '../../../theme.config';
 import { groupPostsByTag } from '../../../utils/tags';
 import { routes } from '../../../utils/routes';
 
@@ -26,12 +26,13 @@ const tags = Array.from(tagMap.entries()).map(([slug, group]) => ({
 tags.sort((a, b) => (b.count - a.count) || a.label.localeCompare(b.label, htmlLang));
 const homeHref = routes.home(locale);
 const blogHref = routes.blog(locale);
+const site = getSiteMeta(locale);
 ---
 
 <!doctype html>
 <html lang={htmlLang}>
 	<head>
-		<BaseHead title={`Tags | ${themeConfig.site.title}`} description={themeConfig.site.description} />
+		<BaseHead title={`Tags | ${site.title}`} description={site.description} locale={locale} />
 	</head>
 
 	<body>

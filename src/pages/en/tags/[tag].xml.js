@@ -1,6 +1,6 @@
 import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
-import { themeConfig } from '../../../theme.config';
+import { getSiteMeta, themeConfig } from '../../../theme.config';
 import { groupPostsByTag } from '../../../utils/tags';
 import { routes } from '../../../utils/routes';
 
@@ -34,9 +34,10 @@ export async function GET(context) {
 	const homeLink = routes.home(locale);
 	const absoluteUrl = (path) => new URL(path, site).toString();
 	const filteredPosts = posts.filter((post) => post.data.lang === locale);
+	const siteMeta = getSiteMeta(locale);
 
 	return rss({
-		title: `${themeConfig.site.title} - ${tagLabel}`,
+		title: `${siteMeta.title} - ${tagLabel}`,
 		description: `This page is also an RSS feed. Subscribe to follow only the posts tagged ${tagLabel}.`,
 		site: siteWithBase.toString(),
 		stylesheet,

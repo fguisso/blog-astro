@@ -1,45 +1,104 @@
 ---
-import type { HTMLAttributes } from 'astro/types';
+interface TimelineItem {
+	meta: string;
+	role: string;
+}
 
-interface Props extends HTMLAttributes<'ul'> {}
+interface Props {
+	items?: TimelineItem[];
+	class?: string;
+}
 
-const { class: className, ...rest } = Astro.props as Props;
-const classes = ['timeline', className];
+const { items = [], class: className } = Astro.props as Props;
+const hasSlot = Astro.slots?.has('default');
+const hasItems = items.length > 0;
 ---
 
-<ul class:list={classes} {...rest}>
-	<slot />
-</ul>
+<div class:list={['timeline-root', className]}>
+	<ol class="timeline-list">
+		{hasItems
+			? items.map((item) => (
+					<li>
+						<div class="dot" aria-hidden="true"></div>
+						<div class="entry">
+							<p class="meta">{item.meta}</p>
+							<p class="role">{item.role}</p>
+						</div>
+					</li>
+			  ))
+			: hasSlot && <slot />}
+	</ol>
+</div>
 
 <style>
-	.timeline {
+	.timeline-root {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.timeline-list {
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		gap: 2rem;
+		display: grid;
+		gap: 0.75rem;
 	}
 
-	.timeline::before {
+	.timeline-list li {
+		position: relative;
+		display: grid;
+		grid-template-columns: 22px 1fr;
+		align-items: start;
+		gap: 0.9rem;
+		padding: 0.5rem 0.75rem;
+		border-radius: 12px;
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+	}
+
+	.timeline-list li::before {
 		content: '';
 		position: absolute;
-		top: 0.75rem;
-		bottom: 0.5rem;
+		left: 22px;
+		top: -0.75rem;
+		bottom: -0.75rem;
 		width: 2px;
-		left: 0.75rem;
-		background: linear-gradient(180deg, rgba(0, 255, 127, 0.6), rgba(154, 26, 255, 0.6));
-		opacity: 0.65;
+		background: linear-gradient(180deg, rgba(0, 255, 127, 0.3), rgba(154, 26, 255, 0.22));
+		opacity: 0.6;
 	}
 
-	@media (max-width: 640px) {
-		.timeline {
-			gap: 1.5rem;
-		}
+	.timeline-list li:first-child::before {
+		top: 1.25rem;
+	}
 
-		.timeline::before {
-			left: 0.6rem;
-		}
+	.timeline-list li:last-child::before {
+		bottom: 1.25rem;
+	}
+
+	.dot {
+		width: 14px;
+		height: 14px;
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(0, 255, 127, 0.9), rgba(154, 26, 255, 0.7));
+		box-shadow: 0 0 15px rgba(0, 255, 127, 0.6), 0 0 24px rgba(154, 26, 255, 0.5);
+		margin: 2px auto 0;
+	}
+
+	.entry {
+		display: grid;
+		gap: 0.25rem;
+	}
+
+	.meta {
+		margin: 0;
+		font-size: 0.95rem;
+		color: var(--color-muted);
+		font-weight: 600;
+	}
+
+	.role {
+		margin: 0;
+		color: var(--color-fg);
+		font-weight: 650;
 	}
 </style>

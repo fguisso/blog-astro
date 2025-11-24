@@ -10,7 +10,7 @@ import FeaturedProjectCard from '../components/FeaturedProjectCard.astro';
 import PostCard from '../components/PostCard.astro';
 import { t } from '../i18n';
 import { getHtmlLang, getRequestLocale } from '../i18n/config';
-import { themeConfig } from '../theme.config';
+import { getSiteMeta, themeConfig } from '../theme.config';
 import { routes } from '../utils/routes';
 
 const locale = getRequestLocale(Astro);
@@ -52,7 +52,8 @@ const postStats = new Map(
 const latestInitial = posts.slice(0, 3);
 const hasAdditionalPosts = posts.length > latestInitial.length;
 
-const { site, featuredProjects } = themeConfig;
+const site = getSiteMeta(locale);
+const { featuredProjects } = themeConfig;
 const homeLabTagHref = routes.blogTagFilter('home-lab', locale);
 const projectsHref = routes.projects(locale);
 const blogHref = routes.blog(locale);
@@ -61,7 +62,7 @@ const blogHref = routes.blog(locale);
 <!doctype html>
 <html lang={htmlLang}>
 		<head>
-			<BaseHead title={site.title} description={site.description} />
+			<BaseHead title={site.title} description={site.description} locale={locale} />
 	</head>
 	<body>
 		<Header locale={locale} pathname={currentPath} search={currentSearch} />
@@ -73,7 +74,7 @@ const blogHref = routes.blog(locale);
 						Oi, eu sou o <span class="display-special primary">Fernando Guisso</span>.
 					</h1>
 					<p class="hero__line">
-						Sou Secure Software Engineer no willbank, onde lidero a área de AppSec e a plataforma interna de autenticação.
+						Sou Security Software Engineer no willbank, onde lidero a área de AppSec e a plataforma interna de autenticação.
 					</p>
 					<p class="hero__line">
 						Crio soluções que tornam a segurança parte natural do desenvolvimento, ajudando engenheiros a

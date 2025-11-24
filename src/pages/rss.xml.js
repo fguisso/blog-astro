@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
 import { DEFAULT_LOCALE, getHtmlLang } from '../i18n/config';
-import { themeConfig } from '../theme.config';
+import { getSiteMeta, themeConfig } from '../theme.config';
 import { routes } from '../utils/routes';
 
 function resolveSite(context) {
@@ -22,10 +22,11 @@ export async function buildRssResponse(context, locale = DEFAULT_LOCALE) {
 	const homeLink = routes.home(locale);
 	const absoluteUrl = (path) => new URL(path, site).toString();
 	const feedLanguage = getHtmlLang(locale);
+	const siteMeta = getSiteMeta(locale);
 
 	return rss({
-		title: themeConfig.site.title,
-		description: themeConfig.site.description,
+		title: siteMeta.title,
+		description: siteMeta.description,
 		site: siteWithBase.toString(),
 		stylesheet,
 		customData: `<language>${feedLanguage}</language><homeLink>${homeLink}</homeLink>`,

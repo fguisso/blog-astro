@@ -21,17 +21,17 @@ const pt = {
 	},
 	footer: {
 		description:
-			'Explorações visuais, notas sobre front-end e experimentos com brilho neon — sempre inspirados no style guide.',
+			'Hack the planet!',
 		navLabel: 'Navegação',
 		connectLabel: 'Conecte-se',
 		rssCta: 'Assinar RSS',
-		rights: 'Feito com Astro e o style guide neon da Guisso.',
+		rights: 'Todos os direitos sem reserva.',
 	},
 	blog: {
 		heroHeading:
 			'Artigos, notas e experimentos <span class="display-special primary">interativos</span>.',
 		heroDescription:
-			'Aqui junto desenvolvimento seguro, música e instrumentos, ajustes infinitos no home lab e as tecnologias que alimentam meus projetos.',
+			'Aqui junto desenvolvimento seguro, música, instrumentos, ajustes infinitos no home lab e as tecnologias que alimentam meus projetos.',
 		rssCta: 'Assinar RSS',
 		tagsCta: 'Explorar tags',
 	},

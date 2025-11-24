@@ -5,6 +5,9 @@ export type FeaturedProject = {
 	image: string;
 };
 
+import type { LocaleCode } from './i18n/config';
+import { DEFAULT_LOCALE } from './i18n/config';
+
 export type ThemeConfig = {
 	site: {
 		title: string;
@@ -17,8 +20,8 @@ export type ThemeConfig = {
 
 export const themeConfig: ThemeConfig = {
 	site: {
-		title: 'Astro Blog',
-		description: 'Welcome to my website!',
+		title: 'guisso.dev',
+		description: 'Engineering & Security',
 		url: 'https://guisso.dev/',
 	},
 	featuredProjects: [
@@ -65,3 +68,11 @@ export const themeConfig: ThemeConfig = {
 		},
 	],
 };
+
+export function getSiteMeta(_locale: LocaleCode = DEFAULT_LOCALE) {
+	return {
+		title: themeConfig.site.title,
+		description: themeConfig.site.description,
+		url: themeConfig.site.url,
+	};
+}
