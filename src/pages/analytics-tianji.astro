@@ -1,0 +1,75 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TianjiEventExamples from '../components/TianjiEventExamples.astro';
+import { getHtmlLang, getRequestLocale } from '../i18n/config';
+import { getSiteMeta } from '../theme.config';
+
+const locale = getRequestLocale(Astro);
+const htmlLang = getHtmlLang(locale);
+const currentPath = Astro.url?.pathname ?? '/';
+const currentSearch = Astro.url?.search ?? '';
+const site = getSiteMeta(locale);
+---
+
+<!doctype html>
+<html lang={htmlLang}>
+	<head>
+		<BaseHead
+			title={`Tianji Analytics · ${site.title}`}
+			description="Integração local do Tianji com eventos rastreados direto no markup."
+			locale={locale}
+		/>
+	</head>
+	<body>
+		<Header locale={locale} pathname={currentPath} search={currentSearch} />
+		<main class="page-shell analytics-page">
+			<section class="analytics-hero">
+				<p class="eyebrow">analytics</p>
+				<h1 class="display-headline">
+					<span class="display-special primary">Tianji</span>
+					<span>tracking sem depender de JS extra</span>
+				</h1>
+				<p>
+					Integração self-hosted, leve e sem cookies: o script entra em todas as páginas e os eventos são disparados apenas com atributos
+					<code>data-tianji-event</code>. Nada de helpers adicionais.
+				</p>
+			</section>
+
+			<TianjiEventExamples />
+		</main>
+		<Footer locale={locale} />
+	</body>
+</html>
+
+<style>
+	.analytics-page {
+		padding: 4rem 0 5rem;
+		display: grid;
+		gap: 2rem;
+	}
+
+	.analytics-hero {
+		display: grid;
+		gap: 0.75rem;
+		padding: 2.25rem;
+		border-radius: var(--border-radius);
+		background: radial-gradient(circle at 10% 10%, rgba(0, 255, 127, 0.18), transparent 38%),
+			radial-gradient(circle at 80% 0%, rgba(154, 26, 255, 0.2), transparent 45%),
+			var(--color-panel);
+		border: 1px solid var(--color-border);
+		box-shadow: var(--shadow-soft);
+	}
+
+	.analytics-hero h1 {
+		display: grid;
+		gap: 0.2rem;
+	}
+
+	.analytics-hero p {
+		max-width: 720px;
+		margin: 0;
+		color: var(--color-muted);
+	}
+</style>

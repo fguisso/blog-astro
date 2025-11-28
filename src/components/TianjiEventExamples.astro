@@ -1,0 +1,145 @@
+---
+// Example slug to illustrate dynamic attributes in Astro/JSX.
+const slug = 'exemplo-de-post-neon';
+---
+
+<section class="tianji-examples">
+	<header class="tianji-examples__header">
+		<p class="eyebrow">tianji events</p>
+		<h2>Eventos rastreados direto no markup</h2>
+		<p>Todos os exemplos usam apenas atributos <code>data-tianji-event</code> e seguem o tema neon.</p>
+	</header>
+
+	<div class="tianji-examples__grid">
+		<article class="tianji-card">
+			<p class="eyebrow">cta</p>
+			<h3>Newsletter no rodapé</h3>
+			<a
+				class="tianji-link"
+				href="/newsletter"
+				data-tianji-event="click-newsletter-cta"
+				data-tianji-event-location="footer"
+			>
+				Assinar newsletter
+			</a>
+		</article>
+
+		<article class="tianji-card">
+			<p class="eyebrow">social</p>
+			<h3>Compartilhar post</h3>
+			<button
+				type="button"
+				class="tianji-button"
+				data-tianji-event="share_post"
+				data-tianji-event-slug={slug}
+				data-tianji-event-platform="twitter"
+			>
+				Compartilhar no X
+			</button>
+		</article>
+
+		<article class="tianji-card">
+			<p class="eyebrow">outbound</p>
+			<h3>Perfil no GitHub</h3>
+			<a
+				class="tianji-link"
+				href="https://github.com/seu-usuario"
+				target="_blank"
+				rel="noreferrer"
+				data-tianji-event="outbound_link"
+				data-tianji-event-destination="github-profile"
+			>
+				Meu GitHub
+			</a>
+		</article>
+
+		<article class="tianji-card">
+			<p class="eyebrow">idioma</p>
+			<h3>Troca de idioma</h3>
+			<button
+				type="button"
+				class="tianji-button"
+				data-tianji-event="language_switch"
+				data-tianji-event-from="pt"
+				data-tianji-event-to="en"
+			>
+				EN
+			</button>
+		</article>
+	</div>
+</section>
+
+<style>
+	.tianji-examples {
+		display: grid;
+		gap: 1.5rem;
+		padding: 2rem;
+		background: linear-gradient(135deg, rgba(154, 26, 255, 0.12), rgba(0, 255, 127, 0.08));
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: var(--border-radius);
+		box-shadow: var(--shadow-soft);
+	}
+
+	.tianji-examples__header h2 {
+		margin-bottom: 0.35rem;
+	}
+
+	.tianji-examples__header p {
+		margin: 0;
+		color: var(--color-muted);
+	}
+
+	.tianji-examples__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: 1rem;
+	}
+
+	.tianji-card {
+		background: var(--color-panel);
+		border: 1px solid var(--color-border);
+		border-radius: calc(var(--border-radius) - 0.15rem);
+		padding: 1rem;
+		display: grid;
+		gap: 0.4rem;
+		position: relative;
+	}
+
+	.tianji-card h3 {
+		margin: 0;
+		font-size: 1.25rem;
+	}
+
+	.tianji-link,
+	.tianji-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		padding: 0.75rem 1rem;
+		border-radius: 0.65rem;
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		background: linear-gradient(120deg, rgba(0, 255, 127, 0.18), rgba(110, 110, 255, 0.16));
+		color: var(--color-fg);
+		font-weight: 650;
+		text-decoration: none;
+		transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+	}
+
+	.tianji-link:hover,
+	.tianji-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+		border-color: var(--color-highlight);
+	}
+
+	.tianji-button {
+		cursor: pointer;
+	}
+
+	@media (max-width: 720px) {
+		.tianji-examples {
+			padding: 1.5rem;
+		}
+	}
+</style>

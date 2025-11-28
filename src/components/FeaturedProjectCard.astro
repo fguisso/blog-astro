@@ -15,7 +15,15 @@ const projectCta = t(locale, 'projects.cardCta');
 ---
 
 <li class="featured-project" style={`--project-image: url("${project.image}")`}>
-	<a href={project.url} class="featured-project__link" target="_blank" rel="noopener noreferrer">
+	<a
+		href={project.url}
+		class="featured-project__link"
+		target="_blank"
+		rel="noopener noreferrer"
+		data-tianji-event="click_project"
+		data-tianji-event-project={project.title}
+		data-tianji-event-destination={project.url}
+	>
 		<div class="featured-project__content">
 			<span class="featured-project__label">{projectLabel}</span>
 			<h3 class="featured-project__name">{project.title}</h3>

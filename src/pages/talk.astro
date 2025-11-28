@@ -214,10 +214,26 @@ const externalAttrs = (url?: string): Record<string, string> => {
 						))}
 					</ul>
 						<div class="talk-hero__repo-actions">
-							<a href="https://sli.dev" class="talk-hero__repo-meta" target="_blank" rel="noopener noreferrer">
+							<a
+								href="https://sli.dev"
+								class="talk-hero__repo-meta"
+								target="_blank"
+								rel="noopener noreferrer"
+								data-tianji-event="outbound_link"
+								data-tianji-event-destination="sli.dev"
+								data-tianji-event-context="talks"
+							>
 								Feito com Slidev
 							</a>
-							<GlowButton href={repoCard.url} variant="accent" size="sm" target="_blank" rel="noopener noreferrer">
+							<GlowButton
+								href={repoCard.url}
+								variant="accent"
+								size="sm"
+								target="_blank"
+								rel="noopener noreferrer"
+								data-tianji-event="click_talk_repo"
+								data-tianji-event-destination="github-talks"
+							>
 								<span class="talk-hero__repo-icon" aria-hidden="true">
 									<svg viewBox="0 0 496 512" role="img">
 										<path
@@ -272,6 +288,9 @@ const externalAttrs = (url?: string): Record<string, string> => {
 												variant="ghost"
 												size="sm"
 												{...externalAttrs(talk.article.url)}
+												data-tianji-event="click_talk_resource"
+												data-tianji-event-kind="article"
+												data-tianji-event-title={talk.talkTitle}
 											>
 												Ler artigo
 											</GlowButton>
@@ -283,6 +302,9 @@ const externalAttrs = (url?: string): Record<string, string> => {
 												size="sm"
 												target="_blank"
 												rel="noopener noreferrer"
+												data-tianji-event="click_talk_resource"
+												data-tianji-event-kind="video"
+												data-tianji-event-title={talk.talkTitle}
 											>
 												{talk.video.label}
 											</GlowButton>
@@ -294,6 +316,9 @@ const externalAttrs = (url?: string): Record<string, string> => {
 												size="sm"
 												target="_blank"
 												rel="noopener noreferrer"
+												data-tianji-event="click_talk_resource"
+												data-tianji-event-kind="slides"
+												data-tianji-event-title={talk.talkTitle}
 											>
 												{talk.slides.label}
 											</GlowButton>

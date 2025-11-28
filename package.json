@@ -8,7 +8,9 @@
     "generate:og": "node ./scripts/generate-og-images.mjs",
     "build": "npm run generate:og && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test:e2e": "playwright test",
+    "test:e2e:preview": "sh -c \"npm run build && npm run preview -- --host --port 4173 >/tmp/astro-preview.log 2>&1 & PREVIEW_PID=$!; npx wait-on http://localhost:4173 && npx playwright test; kill $PREVIEW_PID\""
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.10",
@@ -18,5 +20,9 @@
     "astro": "^5.15.4",
     "satori": "^0.18.3",
     "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "wait-on": "^7.2.0"
   }
 }
