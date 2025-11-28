@@ -167,6 +167,14 @@ const externalAttrs = (url?: string): Record<string, string> => {
 	}
 	return { target: '_blank', rel: 'noopener noreferrer' };
 };
+
+const slugify = (value: string) =>
+	value
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '') || 'talk';
 ---
 
 <!doctype html>
@@ -214,10 +222,23 @@ const externalAttrs = (url?: string): Record<string, string> => {
 						))}
 					</ul>
 						<div class="talk-hero__repo-actions">
-							<a href="https://sli.dev" class="talk-hero__repo-meta" target="_blank" rel="noopener noreferrer">
+							<a
+								href="https://sli.dev"
+								class="talk-hero__repo-meta"
+								target="_blank"
+								rel="noopener noreferrer"
+								data-tianji-event="outbound_link_pt"
+							>
 								Feito com Slidev
 							</a>
-							<GlowButton href={repoCard.url} variant="accent" size="sm" target="_blank" rel="noopener noreferrer">
+							<GlowButton
+								href={repoCard.url}
+								variant="accent"
+								size="sm"
+								target="_blank"
+								rel="noopener noreferrer"
+								data-tianji-event={`click_talk_repo_${slugify(repoCard.title)}`}
+							>
 								<span class="talk-hero__repo-icon" aria-hidden="true">
 									<svg viewBox="0 0 496 512" role="img">
 										<path
@@ -272,6 +293,7 @@ const externalAttrs = (url?: string): Record<string, string> => {
 												variant="ghost"
 												size="sm"
 												{...externalAttrs(talk.article.url)}
+												data-tianji-event={`click_talk_resource_${slugify(talk.talkTitle)}_article`}
 											>
 												Ler artigo
 											</GlowButton>
@@ -283,6 +305,7 @@ const externalAttrs = (url?: string): Record<string, string> => {
 												size="sm"
 												target="_blank"
 												rel="noopener noreferrer"
+												data-tianji-event={`click_talk_resource_${slugify(talk.talkTitle)}_video`}
 											>
 												{talk.video.label}
 											</GlowButton>
@@ -294,6 +317,7 @@ const externalAttrs = (url?: string): Record<string, string> => {
 												size="sm"
 												target="_blank"
 												rel="noopener noreferrer"
+												data-tianji-event={`click_talk_resource_${slugify(talk.talkTitle)}_slides`}
 											>
 												{talk.slides.label}
 											</GlowButton>

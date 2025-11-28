@@ -59,12 +59,25 @@ const currentSearch = Astro.url?.search ?? '';
 			<section class="bio-copy">
 				<div class="bio-header">
 					<h2>Bio para copiar</h2>
-					<a class="download-btn" href={Photo.src} download="fernando-guisso-foto.png">Baixar foto</a>
+					<a
+						class="download-btn"
+						href={Photo.src}
+						download="fernando-guisso-foto.png"
+						data-tianji-event="download_bio_photo_pt"
+					>
+						Baixar foto
+					</a>
 				</div>
 				<div class="bio-field">
 					<textarea id="bio-text" readonly>
 Fernando Guisso é Security Software Engineer em AppSec/DevSecOps. Trabalha com desenvolvimento seguro, automação de testes e análise de vulnerabilidades em empresas de tecnologia e finanças (passagens por will bank e Globo). Participa de comunidades como SunsecRN e OWASP, compartilha conhecimento em eventos e projetos open source. Nas horas vagas, estuda bateria e ensaia uma banda de um homem só.</textarea>
-					<button class="copy-icon" type="button" aria-label="Copiar bio" data-copy-target="#bio-text">
+					<button
+						class="copy-icon"
+						type="button"
+						aria-label="Copiar bio"
+						data-copy-target="#bio-text"
+						data-tianji-event="copy_bio_text_pt"
+					>
 						<svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
 							<path
 								fill="currentColor"
