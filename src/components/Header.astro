@@ -158,6 +158,41 @@ const localeOptions = SUPPORTED_LOCALES.map((code) => ({
 	</div>
 </header>
 
+<script>
+	if (typeof window !== 'undefined') {
+		const mobileMenu = document.querySelector<HTMLElement>('.mobile-menu');
+
+		if (mobileMenu) {
+			const closeMobileMenu = () => mobileMenu.removeAttribute('open');
+			const handleOutsideClick = (event: MouseEvent) => {
+				const target = event.target as Node | null;
+				if (mobileMenu.hasAttribute('open') && target && !mobileMenu.contains(target)) {
+					closeMobileMenu();
+				}
+			};
+			const handleScroll = () => {
+				if (mobileMenu.hasAttribute('open')) {
+					closeMobileMenu();
+				}
+			};
+
+			const interactiveItems = Array.from(
+				mobileMenu.querySelectorAll<HTMLAnchorElement | HTMLButtonElement>('a, button'),
+			);
+
+			document.addEventListener('click', handleOutsideClick);
+			window.addEventListener('scroll', handleScroll, { passive: true });
+			interactiveItems.forEach((item) => item.addEventListener('click', closeMobileMenu));
+
+			document.addEventListener('astro:before-swap', () => {
+				document.removeEventListener('click', handleOutsideClick);
+				window.removeEventListener('scroll', handleScroll);
+				interactiveItems.forEach((item) => item.removeEventListener('click', closeMobileMenu));
+			});
+		}
+	}
+</script>
+
 <style>
 	.site-header {
 		position: sticky;
