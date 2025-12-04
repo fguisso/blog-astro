@@ -24,6 +24,7 @@ const locale = forcedLocale ?? getRequestLocale(Astro);
 const currentPath = pathname ?? Astro.url?.pathname ?? '/';
 const currentSearch = search ?? Astro.url?.search ?? '';
 const homeHref = routes.home(locale);
+const booksHref = 'https://guisso.dev/books';
 const aboutHref = routes.about(locale);
 
 const navLinks = [
@@ -31,6 +32,7 @@ const navLinks = [
 	{ href: routes.blog(locale), label: t(locale, 'nav.blog') },
 	{ href: routes.projects(locale), label: t(locale, 'nav.projects') },
 	{ href: routes.talks(locale), label: t(locale, 'nav.talks') },
+	{ href: booksHref, label: t(locale, 'nav.books') },
 	{ href: routes.tags(locale), label: t(locale, 'nav.tags') },
 ];
 

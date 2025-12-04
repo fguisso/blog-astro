@@ -7,7 +7,7 @@ pubDate: 2024-11-24T10:44:55-03:00
 tags: ["security", "book", "devsec", "appsec"]
 ---
 
-In 2020, I started working on a project that always seemed very necessary to me: a book about security for developers. The original repository and the first ideas can be found here: [fguisso/seguranca-para-desenvolvedores](https://github.com/fguisso/seguranca-para-desenvolvedores)
+In 2020, I started working on a project that always seemed very necessary to me: a book about security for developers. The original repository and the first ideas can be found here: [fguisso/seguranca-para-desenvolvedores](https://github.com/fguisso/seguranca-para-desenvolvedores). You can find this and other books curated together at [guisso.dev/books](https://guisso.dev/books).
 
 The initial inspiration came somewhat from the path followed by other authors, such as Gomex, who created the excellent book "Docker for Developers". I also consulted some friends along the way, such as Roz, Vrech, and Lucas Santos. Lucas, by the way, is an author I admire a lot and has an amazing book dedicated to Kubernetes: [book-kubernetes](https://www.casadocodigo.com.br/products/livro-kubernetes)
 

@@ -14,9 +14,14 @@ const locale = forcedLocale ?? getRequestLocale(Astro);
 
 const today = new Date();
 const rssHref = routes.rss(locale);
+const booksHref = 'https://guisso.dev/books';
 const navLinks = [
 	{ href: routes.home(locale), label: t(locale, 'nav.home') },
 	{ href: routes.blog(locale), label: t(locale, 'nav.blog') },
+	{ href: routes.projects(locale), label: t(locale, 'nav.projects') },
+	{ href: routes.talks(locale), label: t(locale, 'nav.talks') },
+	{ href: booksHref, label: t(locale, 'nav.books') },
+	{ href: routes.tags(locale), label: t(locale, 'nav.tags') },
 	{ href: routes.about(locale), label: t(locale, 'nav.about') },
 	{ href: routes.styleGuide(locale), label: t(locale, 'nav.styleGuide') },
 ];
@@ -136,6 +141,7 @@ const socials = [
 		padding: 0;
 		margin: 0;
 		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 		gap: 0.5rem;
 	}
 

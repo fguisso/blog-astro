@@ -4,6 +4,7 @@ const pt = {
 		blog: 'Blog',
 		projects: 'Projetos',
 		talks: 'Talks',
+		books: 'Livros',
 		tags: 'Tags',
 		about: 'Sobre',
 		styleGuide: 'Style Guide',

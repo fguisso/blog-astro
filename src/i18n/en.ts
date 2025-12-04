@@ -4,6 +4,7 @@ const en = {
 		blog: 'Blog',
 		projects: 'Projects',
 		talks: 'Talks',
+		books: 'Books',
 		tags: 'Tags',
 		about: 'About',
 		styleGuide: 'Style Guide',
