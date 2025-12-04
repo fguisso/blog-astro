@@ -1,0 +1,60 @@
+---
+title: "Open source site analytics"
+lang: 'en'
+canonicalSlug: 'tianji-2025'
+description: "What I learned from self-hosting Tianji: PV/UV without cookies, campaigns, and reliability lessons."
+pubDate: 2025-12-06T09:00:00-03:00
+tags: ["analytics", "privacy", "self-hosted"]
+---
+
+Since the start of 2025 I have been experimenting with **Tianji**, an open-source analytics platform focused on privacy. Instead of paying for a SaaS, I keep Tianji running autonomously on a mini PC at home. That decision brought challenges—like the recent stretch when I was traveling, the machine shut down, and I went almost a month without collecting data—but it also gave me total control over the metrics and a chance to study the tool in depth.
+
+Tianji offers a simple and powerful dashboard. For this year, my blog recorded **6.1k views** and **3.2k visitors**, with an average visit time of **1 minute and 27 seconds**. The most important takeaway was realizing it is possible to collect these metrics without invasive cookies: the platform only uses the browser fingerprint and stores the bare minimum to build PV (page views) and UV (unique visitors) charts. Beyond page counts, I implemented **actions** to track clicks on social buttons and external links, which helped me understand which content was sending readers away from the site.
+
+![Annual Tianji dashboard with PV, UV, and average time](./tianji-2025-anual-dashb.png)
+*Annual consolidated view: PV, UV, and average session time.*
+
+## Promotion strategy and traffic spikes
+
+Early in the year I adopted a simple marketing strategy: I broke the [Threat Modeling Intro](/en/blog/threat-modeling-intro) article into small sections and scheduled weekly posts on LinkedIn. Each post shared a snippet of the text and ended with a link to the full article. The approach worked. The dashboard shows that the series generated a big traffic spike between March and April and turned the threat modeling article into the second most visited piece of the year (about **848 views**).
+
+Other articles that performed well were [X-Forwarded-For](/en/blog/x-forwarded-for), [Talk](/en/talk), and the AppSec KPIs article ([AppSec KPI](/en/blog/appsec-kpi)). Interestingly, the X-Forwarded-For piece did not get many LinkedIn promos but still ranked among the most visited pages. That suggests organic search interest or that readers who arrived through another text kept browsing the blog.
+
+![Top pages and most visited paths in 2025](./tianji-2025-anual-paths.png)
+*Most visited paths in 2025, highlighting Threat Modeling and X-Forwarded-For.*
+
+## Understanding where visitors come from
+
+The annual data showed that **45%** of visitors came from Brazil, **31%** from the United States, and **12%** from China. This highlights that most of the audience is local, something that became clearer after I stopped promoting articles on LinkedIn and still saw Brazilian traffic grow. Curiously, when filtering for the last 30 days, the picture changes: the United States accounts for **30%** of visits, followed by China (**20%**) and Brazil (**16%**). This reinforces the importance of looking at different time ranges and shows how the geographic distribution can shift when you stop running campaigns.
+
+As for traffic sources, more than **70%** of visits were direct, but LinkedIn appeared as the main external referrer over the year (**15%** of visits). In the last 30 days, however, LinkedIn drove only one click; search engines—especially Google (**12%**), plus Bing and Kagi—became the primary entry point. That is natural: without social posts, the blog depends more on SEO and on readers saving the link to return later.
+
+![Annual geographic distribution in Tianji](./tianji-anual-2025-geo.png)
+*Annual map: Brazil leads the audience, followed by the US and China.*
+
+## Looking at the last 90 days and the monthly view
+
+When I expand the window to the last 90 days, some interesting nuances appear. In this period the site logged **923 views** and **522 visitors**, with an average reading time of **1 minute and 34 seconds**. The geographic split flipped: the United States concentrated **41%** of visitors, followed by Brazil (**26%**) and China (**13%**). Direct traffic stayed dominant (**77%**), but Google and LinkedIn maintained a noticeable presence.
+
+The 90-day chart helps explain what happened month by month:
+
+- **September 2025:** the month with the most visits in the quarter, with spikes around September 23 when an article about HTTP headers and another blog update received a lot of attention. LinkedIn promos were still active then, reflected in the 50 visits from the network.
+- **October 2025:** visits nearly vanished. The mini PC hosting Tianji was off for most of the month, which explains the lack of data. This gap underscores how important it is to have a dedicated server or redundancy to avoid losing metrics.
+- **November 2025:** after turning the server back on, traffic gradually returned. In the last 30 days (covering part of November and early December) the blog received **286 views** and **122 visitors**, with average reading time rising to **2 minutes and 29 seconds**. Most visitors arrived through organic search; LinkedIn barely contributed because I stopped the promos. The most visited pages in this period were the root `/`, [x-forwarded-for](/en/blog/x-forwarded-for), and an article about CORS rules.
+
+I also noticed that, even after redesigning the site and moving all old content to a new URL (`guisso.dev/old-blog-2023`), the “old blog” kept receiving search traffic. That reinforces the need to keep redirects in place and to monitor the main site and the legacy one separately; the split makes it easier to brainstorm new content based on what still draws interest in older articles.
+
+![30-day view in Tianji with PV, UV, and referrers](./tianji-30-dias-2025.png)
+*30-day slice: PV, UV, average time, and referrer shifts.*
+
+## Technical behavior and devices
+
+Looking at browsers, **Chrome** dominates with **69%** of visitors for the year and **78%** in the last 30 days. Mobile access totaled **38%** throughout 2025, while laptops and desktops split the rest. That shows how critical it is to keep the layout responsive; even without mobile-specific optimizations, the experience felt smooth, and I suspect part of the LinkedIn audience reads on phones.
+
+The operating-system distribution also varied: **Windows 10** and **Android** led, but macOS, Linux, and iOS accounted for meaningful slices. These insights helped me validate that the site behaved well across platforms, especially because I use a static-generated theme without much cross-browser testing. Tianji makes these views straightforward, letting me spot any serious issues in a particular environment.
+
+## Lessons learned and next steps
+
+Self-hosting Tianji taught me a lot about infrastructure. I had to set up automatic updates, build a backup plan to avoid losing data, and above all handle the unexpected outage when the mini PC shut down. Continuous metric collection was halted for almost a month, which impacted the reports but served as a reminder to think about redundancy.
+
+On the content side, it became clear that consistent promotion is crucial. While I kept weekly posts on LinkedIn, traffic spiked; when I stopped, the daily average fell, but part of the audience kept coming via organic search. I also realized that niche technical topics—like HTTP headers and proxy configurations—attract visits even without promotion, suggesting room to expand series on those subjects.
